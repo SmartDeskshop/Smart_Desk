@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile - Smart Shop Manager</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4bb543;
+      --error-color: #ff3333;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      color: var(--dark-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .profile-header h2 {
+      color: var(--primary-color);
+      font-size: 1.8rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background-color: var(--light-color);
+      color: var(--dark-color);
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover {
+      background-color: #e2e6ea;
+    }
+
+    .back-btn i {
+      margin-right: 0.5rem;
+    }
+
+    .profile-card {
+      margin-bottom: 2rem;
+    }
+
+    .profile-info {
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-info label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--dark-color);
+    }
+
+    .profile-info .read-only {
+      padding: 0.75rem;
+      background-color: var(--light-color);
+      border-radius: var(--border-radius);
+      display: block;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #ced4da;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn i {
+      margin-right: 0.5rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-danger {
+      background-color: var(--error-color);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #e60000;
+    }
+
+    .verification-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .verified {
+      background-color: rgba(75, 181, 67, 0.2);
+      color: var(--success-color);
+    }
+
+    .unverified {
+      background-color: rgba(255, 51, 51, 0.2);
+      color: var(--error-color);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin: 1rem 0;
+      font-weight: 500;
+      display: none;
+    }
+
+    .success {
+      background-color: rgba(75, 181, 67, 0.2);
+      color: var(--success-color);
+      display: block;
+    }
+
+    .error {
+      background-color: rgba(255, 51, 51, 0.2);
+      color: var(--error-color);
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      .input-group {
+        flex-direction: column;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="profile-header">
+      <h2><i class="fas fa-user-circle"></i> User Profile</h2>
+      <a href="dashboard.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <div class="profile-card">
+      <div class="profile-info">
+        <label for="nameInput">Full Name</label>
+        <div class="input-group">
+          <input type="text" id="nameInput" placeholder="Enter your full name" />
+          <button id="updateNameBtn" class="btn btn-primary">
+            <i class="fas fa-save"></i> Update
+          </button>
+        </div>
+      </div>
+
+      <div class="profile-info">
+        <label>Email Address</label>
+        <span class="read-only" id="email">Loading...</span>
+      </div>
+
+      <div class="profile-info">
+        <label>Email Verification Status</label>
+        <span class="read-only" id="verified">Loading...</span>
+      </div>
+
+      <div class="profile-info">
+        <label>User ID</label>
+        <span class="read-only" id="uid">Loading...</span>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button id="verifyEmailBtn" class="btn btn-secondary">
+        <i class="fas fa-envelope"></i> Verify Email
+      </button>
+      <button id="changePasswordBtn" class="btn btn-secondary">
+        <i class="fas fa-key"></i> Change Password
+      </button>
+      <button id="logoutBtn" class="btn btn-danger">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEZzbOune3lfB2YFkYMSlg2CZJbAlGQdw",
+      authDomain: "smartshopmanager59.firebaseapp.com",
+      projectId: "smartshopmanager59",
+      storageBucket: "smartshopmanager59.appspot.com",
+      messagingSenderId: "697076760349",
+      appId: "1:697076760349:web:484fd62ea3806a3f92ebf4"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const messageEl = document.getElementById('message');
+
+    // Show user info
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById('nameInput').value = user.displayName || '';
+        document.getElementById('email').textContent = user.email;
+        
+        const verifiedEl = document.getElementById('verified');
+        if (user.emailVerified) {
+          verifiedEl.innerHTML = '<span class="verification-badge verified"><i class="fas fa-check-circle"></i> Verified</span>';
+        } else {
+          verifiedEl.innerHTML = '<span class="verification-badge unverified"><i class="fas fa-exclamation-circle"></i> Unverified</span>';
+        }
+        
+        document.getElementById('uid').textContent = user.uid;
+      } else {
+        window.location.href = 'signin.html'; // redirect if not logged in
+      }
+    });
+
+    // Update display name
+    document.getElementById('updateNameBtn').addEventListener('click', () => {
+      const newName = document.getElementById('nameInput').value.trim();
+      const user = auth.currentUser;
+
+      if (user && newName) {
+        user.updateProfile({
+          displayName: newName
+        }).then(() => {
+          showMessage('Name updated successfully!', 'success');
+        }).catch((error) => {
+          showMessage('Error updating name: ' + error.message, 'error');
+        });
+      } else {
+        showMessage('Please enter a valid name.', 'error');
+      }
+    });
+
+    // Verify email
+    document.getElementById('verifyEmailBtn').addEventListener('click', () => {
+      const user = auth.currentUser;
+      if (user) {
+        user.sendEmailVerification().then(() => {
+          showMessage('Verification email sent. Please check your inbox.', 'success');
+        }).catch((error) => {
+          showMessage('Error sending verification email: ' + error.message, 'error');
+        });
+      }
+    });
+
+    // Change password (would need email sending setup)
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+      const user = auth.currentUser;
+      const email = user.email;
+      
+      auth.sendPasswordResetEmail(email).then(() => {
+        showMessage('Password reset email sent. Please check your inbox.', 'success');
+      }).catch((error) => {
+        showMessage('Error sending password reset email: ' + error.message, 'error');
+      });
+    });
+
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = 'signin.html';
+      }).catch((error) => {
+        showMessage('Error logging out: ' + error.message, 'error');
+      });
+    });
+
+    // Helper function to show messages
+    function showMessage(text, type) {
+      messageEl.textContent = text;
+      messageEl.className = 'message ' + type;
+      
+      // Hide message after 5 seconds
+      setTimeout(() => {
+        messageEl.style.opacity = '1';
+        let opacity = 1;
+        const fadeInterval = setInterval(() => {
+          opacity -= 0.1;
+          messageEl.style.opacity = opacity;
+          if (opacity <= 0) {
+            clearInterval(fadeInterval);
+            messageEl.className = 'message';
+            messageEl.style.opacity = '1';
+          }
+        }, 100);
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Maker | SmartDesk</title>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f8f9fa;
+      color: var(--dark);
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    h2 {
+      color: var(--primary);
+      margin: 0;
+    }
+    
+    label {
+      font-weight: 600;
+      color: var(--dark);
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    input, textarea, button, select {
+      width: 100%;
+      margin: 8px 0 16px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      transition: all 0.3s;
+      font-size: 16px;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .item-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .item-group input {
+      flex: 1;
+      margin: 0;
+    }
+    
+    .item-group button {
+      width: auto;
+      padding: 10px 15px;
+      background: var(--danger);
+      color: white;
+      border: none;
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 16px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--secondary);
+    }
+    
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background-color: #218838;
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background-color: #d1145a;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .bill-preview {
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      background: #fafafa;
+      display: none;
+    }
+    
+    .bill-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .bill-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .bill-items {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    .bill-items th, .bill-items td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .bill-items th {
+      background: #f1f1f1;
+    }
+    
+    .bill-total {
+      text-align: right;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .bill-footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .bill-preview, .bill-preview * {
+        visibility: visible;
+      }
+      .bill-preview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
+        background: white;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>Order Maker</h2>
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span id="userName">User</span>
+      </div>
+    </div>
+    
+    <form id="orderForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Customer Name</label>
+          <input type="text" id="customerName" required />
+        </div>
+        
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="text" id="customerPhone" required />
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Business Type</label>
+        <select id="businessType" required>
+          <option value="">Select Business Type</option>
+          <option>Grocery</option>
+          <option>Electronics</option>
+          <option>Clothing</option>
+          <option>Services</option>
+          <option>Other</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Order Items</label>
+        <div id="items"></div>
+        <button type="button" class="btn btn-primary" onclick="addItem()">+ Add Item</button>
+      </div>
+      
+      <div class="form-group">
+        <label>Additional Notes</label>
+        <textarea id="notes" rows="3"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Total Amount ₹</label>
+        <input type="number" id="totalAmount" required />
+      </div>
+      
+      <div class="action-buttons">
+        <button type="submit" class="btn btn-success">Submit Order</button>
+        <button type="button" class="btn btn-primary" onclick="previewBill()">Preview Bill</button>
+      </div>
+    </form>
+    
+    <div id="billPreview" class="bill-preview">
+      <div class="bill-header">
+        <h2>INVOICE</h2>
+        <p>Order #<span id="billNumber">0001</span></p>
+      </div>
+      
+      <div class="bill-details">
+        <div>
+          <p><strong>Customer:</strong> <span id="billCustomerName"></span></p>
+          <p><strong>Phone:</strong> <span id="billCustomerPhone"></span></p>
+        </div>
+        <div>
+          <p><strong>Date:</strong> <span id="billDate"></span></p>
+          <p><strong>Business Type:</strong> <span id="billBusinessType"></span></p>
+        </div>
+      </div>
+      
+      <table class="bill-items">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="billItems">
+        </tbody>
+      </table>
+      
+      <div class="bill-total">
+        <p>Subtotal: ₹<span id="billSubtotal">0.00</span></p>
+        <p>Total: ₹<span id="billTotal">0.00</span></p>
+      </div>
+      
+      <div class="bill-footer">
+        <p>Thank you for your business!</p>
+        <p>Generated by <span id="billGeneratedBy">User</span></p>
+      </div>
+      
+      <div class="action-buttons no-print">
+        <button type="button" class="btn btn-primary" onclick="printBill()">Print Bill</button>
+        <button type="button" class="btn btn-success" onclick="downloadBill()">Download PDF</button>
+        <button type="button" class="btn btn-danger" onclick="closePreview()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Setup -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEZzbOune3lfB2YFkYMSlg2CZJbAlGQdw",
+      authDomain: "smartshopmanager59.firebaseapp.com",
+      projectId: "smartshopmanager59",
+      storageBucket: "smartshopmanager59.appspot.com",
+      messagingSenderId: "697076760349",
+      appId: "1:697076760349:web:484fd62ea3806a3f92ebf4"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    
+    // Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+    
+    // Global variables
+    let currentUser = null;
+    let orderCounter = 1001;
+    
+    // DOM elements
+    const orderForm = document.getElementById('orderForm');
+    const itemsContainer = document.getElementById('items');
+    const billPreview = document.getElementById('billPreview');
+    const userNameElement = document.getElementById('userName');
+    const userAvatarElement = document.getElementById('userAvatar');
+    
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check auth state
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          currentUser = user;
+          updateUserDisplay();
+          // Generate a random order number (in a real app, you'd get this from your database)
+          orderCounter = Math.floor(1000 + Math.random() * 9000);
+          document.getElementById('billNumber').textContent = orderCounter;
+        } else {
+          // If not logged in, redirect to login (or handle as needed)
+          window.location.href = 'login.html';
+        }
+      });
+      
+      // Load any existing order counter from Firestore
+      loadOrderCounter();
+    });
+    
+    function updateUserDisplay() {
+      if (currentUser) {
+        const displayName = currentUser.displayName || currentUser.email.split('@')[0];
+        userNameElement.textContent = displayName;
+        document.getElementById('billGeneratedBy').textContent = displayName;
+        
+        // Set avatar initials
+        const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase();
+        userAvatarElement.textContent = initials;
+      }
+    }
+    
+    function loadOrderCounter() {
+      db.collection('counters').doc('orders').get()
+        .then(doc => {
+          if (doc.exists) {
+            orderCounter = doc.data().count;
+          }
+        })
+        .catch(error => {
+          console.error("Error loading order counter:", error);
+        });
+    }
+    
+    function incrementOrderCounter() {
+      orderCounter++;
+      db.collection('counters').doc('orders').set({
+        count: orderCounter
+      }, { merge: true });
+    }
+    
+    function addItem() {
+      const itemGroup = document.createElement('div');
+      itemGroup.className = 'item-group';
+      itemGroup.innerHTML = `
+        <input type="text" placeholder="Item name" class="item-name" required/>
+        <input type="number" placeholder="Qty" class="item-qty" min="1" value="1" required/>
+        <input type="number" placeholder="Price" class="item-price" min="0" step="0.01" required/>
+        <button type="button" class="btn btn-danger" onclick="this.parentElement.remove(); calculateTotal()">×</button>
+      `;
+      
+      // Add event listeners to calculate total when item details change
+      const inputs = itemGroup.querySelectorAll('input');
+      inputs.forEach(input => {
+        input.addEventListener('input', calculateTotal);
+      });
+      
+      itemsContainer.appendChild(itemGroup);
+    }
+    
+    function calculateTotal() {
+      const itemElements = document.querySelectorAll('.item-group');
+      let total = 0;
+      
+      itemElements.forEach(el => {
+        const qty = Number(el.querySelector('.item-qty').value) || 0;
+        const price = Number(el.querySelector('.item-price').value) || 0;
+        total += qty * price;
+      });
+      
+      document.getElementById('totalAmount').value = total.toFixed(2);
+    }
+    
+    function previewBill() {
+      // Validate form first
+      if (!orderForm.checkValidity()) {
+        orderForm.reportValidity();
+        return;
+      }
+      
+      // Get form values
+      const name = document.getElementById('customerName').value;
+      const phone = document.getElementById('customerPhone').value;
+      const type = document.getElementById('businessType').value;
+      const notes = document.getElementById('notes').value;
+      const total = parseFloat(document.getElementById('totalAmount').value);
+      
+      // Get items
+      const itemElements = document.querySelectorAll('.item-group');
+      const items = Array.from(itemElements).map(el => ({
+        name: el.querySelector('.item-name').value,
+        qty: Number(el.querySelector('.item-qty').value),
+        price: Number(el.querySelector('.item-price').value)
+      }));
+      
+      // Calculate subtotal (same as total in this simple example)
+      const subtotal = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+      
+      // Update bill preview
+      document.getElementById('billCustomerName').textContent = name;
+      document.getElementById('billCustomerPhone').textContent = phone;
+      document.getElementById('billBusinessType').textContent = type;
+      document.getElementById('billDate').textContent = new Date().toLocaleDateString();
+      document.getElementById('billSubtotal').textContent = subtotal.toFixed(2);
+      document.getElementById('billTotal').textContent = total.toFixed(2);
+      
+      // Update bill items table
+      const billItemsTable = document.getElementById('billItems');
+      billItemsTable.innerHTML = '';
+      
+      items.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.qty}</td>
+          <td>₹${item.price.toFixed(2)}</td>
+          <td>₹${(item.qty * item.price).toFixed(2)}</td>
+        `;
+        billItemsTable.appendChild(row);
+      });
+      
+      // Show notes if they exist
+      if (notes) {
+        const notesRow = document.createElement('tr');
+        notesRow.innerHTML = `<td colspan="4"><strong>Notes:</strong> ${notes}</td>`;
+        billItemsTable.appendChild(notesRow);
+      }
+      
+      // Show the bill preview
+      billPreview.style.display = 'block';
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+    
+    function closePreview() {
+      billPreview.style.display = 'none';
+    }
+    
+    function printBill() {
+      window.print();
+    }
+    
+    function downloadBill() {
+      // Use html2canvas to capture the bill preview
+      html2canvas(billPreview).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 295; // A4 height in mm
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // Add new page if content is too long
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        
+        pdf.save(`invoice_${orderCounter}.pdf`);
+      });
+    }
+    
+    // Form submission
+    orderForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Get form values
+      const name = document.getElementById('customerName').value;
+      const phone = document.getElementById('customerPhone').value;
+      const type = document.getElementById('businessType').value;
+      const notes = document.getElementById('notes').value;
+      const total = parseFloat(document.getElementById('totalAmount').value);
+      
+      // Get items
+      const itemElements = document.querySelectorAll('.item-group');
+      const items = Array.from(itemElements).map(el => ({
+        name: el.querySelector('.item-name').value,
+        qty: Number(el.querySelector('.item-qty').value),
+        price: Number(el.querySelector('.item-price').value)
+      }));
+      
+      try {
+        // Save to Firestore
+        await db.collection('orders').add({
+          customerName: name,
+          customerPhone: phone,
+          businessType: type,
+          notes: notes,
+          total: total,
+          items: items,
+          orderNumber: orderCounter,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          createdBy: currentUser.uid,
+          createdByName: currentUser.displayName || currentUser.email
+        });
+        
+        // Increment order counter
+        incrementOrderCounter();
+        
+        // Show success message
+        alert('✅ Order submitted successfully!');
+        
+        // Reset form
+        orderForm.reset();
+        itemsContainer.innerHTML = '';
+        billPreview.style.display = 'none';
+        
+        // Generate new order number for next order
+        orderCounter++;
+        document.getElementById('billNumber').textContent = orderCounter;
+      } catch (error) {
+        console.error('Error submitting order:', error);
+        alert('❌ Error submitting order. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>

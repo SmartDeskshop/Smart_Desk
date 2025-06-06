@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartDesk</title>
+    <link rel="icon" type="image" href="https://i.postimg.cc/6pWnDCyv/dashboard.png">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js" defer></script>
+</head>
+<body>
+  <!-- Header with dynamic auth state -->
+  <header class="header">
+    <div class="container">
+      <h1>SmartDesk</h1>
+      <nav>
+        <ul id="nav-links">
+          <li><a href="Features.html">Features</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li id="auth-link"><a href="signin.html">Sign In</a></li>
+          <li><a class="btn btn-primary" href="signup.html"> Sign Up</a></li>
+        </ul>
+        <div id="user-profile" style="display: none;">
+          <span id="user-email"></span>
+          <button id="sign-out-btn" class="btn btn-primary">Sign Out</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-text">
+        <h2>Welcome to SmartDesk</h2>
+        <p>Run Your Entire Shop Digitally</p>
+        <div class="buttons">
+          <a href="signin.html" class="btn">Sign In</a>
+          <a href="signup.html" class="btn btn-primary">Sign Up</a>
+          <div id="login-prompt" style="display: none;">
+  <p>Account created! Please log in below.</p>
+</div>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="https://i.postimg.cc/6pWnDCyv/dashboard.png" alt="Dashboard illustration" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2>Powerful Features</h2>
+      <p>Everything you need to manage your shop efficiently in one place.</p>
+      <div class="feature-cards">
+        <div class="card">Easy Billing</div>
+        <div class="card">Inventory Control</div>
+        <div class="card">Customer Management</div>
+        <div class="card">Analytics Dashboard</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials" id="about">
+    <div class="container">
+      <h2>Why Shop Owners Love Us</h2>
+      <div class="testimonial-cards">
+        <div class="card">
+          <p>"SmartDesk made my business run smoother and more organized!"</p>
+        
+        </div>
+        <div class="card">
+          <p>"The analytics dashboard gives me insights I never had before."</p>
+         
+        </div>
+        <div class="card">
+          <p>"Customer management has never been easier. This app is a game-changer!"</p>
+         
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <h2>Get In Touch</h2>
+      <p>Have questions? Our team is here to help you.</p>
+      <div class="contact-cards">
+        <div class="card">
+          <h3>Email Us</h3>
+          <p>smartshop.dashboard@gmail.com</p>
+        </div>
+        <div class="card">
+          <h3>Call Us</h3>
+          <p>+91 96997 79276</p>
+        </div>
+        <div class="card">
+          <h3>Live Chat</h3>
+          <p><a href="chatbot.html">Start Chat</a></p>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- Features -->
+<section class="features" id="features">
+  <div class="container">
+    <h2>Powerful Features</h2>
+    <p>Everything you need to manage your shop efficiently in one place.</p>
+    <div class="feature-cards">
+      <div class="card">
+        <h3>Easy Billing</h3>
+        <p>Create professional invoices in seconds with our intuitive billing system. Accept multiple payment methods and track transactions effortlessly.</p>
+      </div>
+      <div class="card">
+        <h3>Inventory Control</h3>
+        <p>Real-time stock monitoring with low stock alerts. Barcode scanning and automated inventory updates to keep your shop fully stocked.</p>
+      </div>
+      <div class="card">
+        <h3>Customer Management</h3>
+        <p>Build customer profiles, track purchase history, and implement loyalty programs to grow your customer base.</p>
+      </div>
+      <div class="card">
+        <h3>Analytics Dashboard</h3>
+        <p>Powerful insights with visual reports on sales trends, top products, and revenue analytics to make data-driven decisions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+  <!-- Footer -->
+   
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-columns">
+        <div>
+          <h4>Smart Shop Manager</h4>
+          <p>The complete solution for managing your shop digitally.</p>
+          <div style="margin-top: 1rem;">
+            <a href="https://www.facebook.com/share/1D7rxXVQGk/" target="_blank" style="color: var(--light); margin-right: 1rem;"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://x.com/_Omkar_jadhav_" target="_blank" style="color: var(--light); margin-right: 1rem;"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.linkedin.com/in/omkarjadhv1k?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" style="color: var(--light); margin-right: 1rem;"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/omkarjadhav1k.in/profilecard/?igsh=eDZxbHhwa3d2M3I4" target="_blank" style="color: var(--light);"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="Features.html"> Features</li></a>
+            <li><a href="rate-pricing.html">Pricing</li></a>
+            <li><a href="maintenance.html">Integration</li></a>
+            <li><a href="maintenance.html">Roadmap</li></a>
+          </ul>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <ul>
+            <li><a href="help.html">Help Center</li></a>
+            <li><a href="maintenance.html">Tutorials</li></a>
+            <li><a href="maintenance.html">Community</li></a>
+            <li><a href="contact.html">Contact Us</li></a>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About</li></a>
+            <li><a href="maintenance.html">Careers</li></a>
+            <li><a href="maintenance.html">Blog</li></a>
+            <li><a href="maintenance.html">Press</li></a>
+          </ul>
+        </div>
+      </div>
+      <p>&copy; 2025 SmartDesk Management. All rights reserved.</p>
+    </div>
+  </footer>
+ </body>
+</html>

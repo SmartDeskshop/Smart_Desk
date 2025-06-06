@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartDesk AI | Dashboard Assistant</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --primary-light: #e6e9ff;
+      --accent: #4cc9f0;
+      --success: #4ade80;
+      --warning: #f59e0b;
+      --error: #f43f5e;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --gray: #94a3b8;
+      --gray-light: #e2e8f0;
+      --user-msg: #e0e7ff;
+      --bot-msg: #f1f5f9;
+      --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7ff;
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styles */
+    .header {
+      background: linear-gradient(135deg, var(--primary), #3f37c9);
+      color: white;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-beta {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.15rem 0.5rem;
+      border-radius: 100px;
+      margin-left: 0.5rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Chat Container */
+    .chat-container-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      height: calc(100vh - 180px);
+    }
+
+    .chat-header {
+      background: white;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .chat-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .chat-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    /* Messages Area */
+    .messages-container {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+      background-color: var(--light);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      max-width: 75%;
+      margin-bottom: 1rem;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bot-message {
+      align-self: flex-start;
+      background: white;
+      border-radius: 0 16px 16px 16px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--gray-light);
+    }
+
+    .user-message {
+      align-self: flex-end;
+      background: var(--user-msg);
+      border-radius: 16px 0 16px 16px;
+      padding: 1rem;
+      color: var(--dark);
+    }
+
+    .message-time {
+      font-size: 0.75rem;
+      color: var(--gray);
+      margin-top: 0.5rem;
+      text-align: right;
+    }
+
+    /* Input Area */
+    .input-container {
+      padding: 1rem 1.5rem;
+      background: white;
+      border-top: 1px solid var(--gray-light);
+      position: relative;
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 0.875rem 1.25rem;
+      border: 1px solid var(--gray-light);
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition);
+      background: var(--light);
+    }
+
+    .chat-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .send-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .send-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .send-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Suggestions */
+    .suggestions {
+      padding: 0.75rem 1.5rem;
+      background: white;
+      border-top: 1px solid var(--gray-light);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .suggestion-chip {
+      padding: 0.5rem 1rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+    }
+
+    .suggestion-chip:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+      background: white;
+      border-top: 1px solid var(--gray-light);
+    }
+
+    /* Maintenance Notice */
+    .maintenance-notice {
+      background: linear-gradient(90deg, #f59e0b, #f97316);
+      color: white;
+      padding: 0.75rem 1rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .maintenance-notice svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 1rem;
+      }
+      
+      .chat-container-wrapper {
+        height: calc(100vh - 160px);
+      }
+      
+      .message {
+        max-width: 85%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header {
+        padding: 1rem;
+      }
+      
+      .logo-text {
+        font-size: 1.25rem;
+      }
+      
+      .input-wrapper {
+        flex-direction: column;
+      }
+      
+      .send-button {
+        padding: 0.75rem;
+        justify-content: center;
+      }
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 0 16px 16px 16px;
+      border: 1px solid var(--gray-light);
+      width: fit-content;
+      margin-bottom: 1rem;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--gray);
+      border-radius: 50%;
+      animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingAnimation {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Maintenance Notice -->
+  <div class="maintenance-notice">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+    <span>Under Maintenance - Exciting new features coming soon!</span>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">AI</div>
+      <div>
+        <span class="logo-text">SmartDesk</span>
+        <span class="logo-beta">BETA</span>
+      </div>
+    </div>
+    <div class="chat-status">
+      <div class="status-indicator"></div>
+      <span>AI Assistant is online</span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="chat-container-wrapper">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-title">
+          <div class="chat-avatar">DA</div>
+          <div>
+            <h3>Dashboard Assistant</h3>
+            <p class="chat-status">
+              <span class="status-indicator"></span>
+              <span>Responding instantly</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Container -->
+      <div class="messages-container" id="chat-container">
+        <!-- Initial Bot Message -->
+        <div class="message bot-message">
+          <p>Hello! 👋 I'm your AI-powered Dashboard Assistant. I can help you with:</p>
+          <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+            <li>Product management</li>
+            <li>Customer data analysis</li>
+            <li>Inventory tracking</li>
+            <li>Business analytics</li>
+          </ul>
+          <p style="margin-top: 0.75rem;">What would you like to know today?</p>
+          <div class="message-time">Just now</div>
+        </div>
+      </div>
+
+      <!-- Suggestions -->
+      <div class="suggestions" id="suggestions">
+        <button class="suggestion-chip" onclick="suggestClick(this)">How to add products?</button>
+        <button class="suggestion-chip" onclick="suggestClick(this)">View customer data</button>
+        <button class="suggestion-chip" onclick="suggestClick(this)">Download reports</button>
+        <button class="suggestion-chip" onclick="suggestClick(this)">Analytics dashboard</button>
+      </div>
+
+      <!-- Input Area -->
+      <div class="input-container">
+        <div class="input-wrapper">
+          <input type="text" class="chat-input" id="user-input" placeholder="Ask me anything about your dashboard..." />
+          <button class="send-button" onclick="sendMessage()">
+            <svg class="send-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2023 SmartDesk AI | Enterprise-grade Dashboard Assistant | v2.1.5</p>
+  </footer>
+
+  <script>
+    const chatContainer = document.getElementById("chat-container");
+    const userInput = document.getElementById("user-input");
+    const suggestions = document.getElementById("suggestions");
+
+    // Enhanced FAQ with richer responses
+    const faq = {
+      "dashboard": {
+        answer: "🌟 Your dashboard provides a comprehensive overview of all key business metrics. Key features include:<br><br>• Real-time sales analytics<br>• Inventory status at a glance<br>• Customer activity monitoring<br>• Performance benchmarks<br><br>You can customize widgets by clicking the gear icon in each section.",
+        icon: "📊"
+      },
+      "add product": {
+        answer: "To add a new product to your inventory:<br><br>1. Navigate to <b>Products > Manage Inventory</b><br>2. Click <b>+ Add Product</b><br>3. Complete all required fields (marked with *)<br>4. Upload product images (recommended 1200×800px)<br>5. Set pricing and variants if needed<br>6. Click <b>Save & Publish</b><br><br>Pro Tip: Use our bulk import feature for adding multiple products at once!",
+        icon: "📦"
+      },
+      "delete product": {
+        answer: "To remove a product:<br><br>1. Go to <b>Products > Inventory</b><br>2. Find the product using search or filters<br>3. Click the <b>⋮ menu</b> and select <b>Delete</b><br>4. Confirm deletion<br><br>⚠️ <i>Note: Deleted products are archived for 30 days and can be restored in the <b>Trash</b> section.</i>",
+        icon: "🗑️"
+      },
+      "change price": {
+        answer: "You can update product prices in several ways:<br><br><b>Single product:</b><br>1. Edit the product directly<br>2. Update the price field<br>3. Save changes<br><br><b>Multiple products:</b><br>1. Select products using checkboxes<br>2. Click <b>Bulk Actions</b><br>3. Choose <b>Update Pricing</b><br>4. Set new price or percentage increase<br><br>All price changes are logged in the audit trail.",
+        icon: "💰"
+      },
+      "download stock": {
+        answer: "Export your complete inventory:<br><br>1. Go to <b>Products > Inventory</b><br>2. Click <b>Export</b> in top-right<br>3. Select format (CSV/Excel/JSON)<br>4. Choose fields to include<br>5. Click <b>Generate Export</b><br><br>The file will download automatically and contains:<br>• Product details<br>• Current stock levels<br>• Variant information<br>• Pricing history",
+        icon: "📥"
+      },
+      "customer list": {
+        answer: "Access your customer database:<br><br>1. Navigate to <b>Customers > Overview</b><br><br>Here you can:<br>• View customer profiles<br>• Filter by segments (VIP, inactive, etc.)<br>• Export contact lists<br>• Analyze purchase history<br>• Create customer groups<br><br>All customer data is GDPR compliant.",
+        icon: "👥"
+      },
+      "analytics": {
+        answer: "📈 Our analytics dashboard provides powerful insights:<br><br><b>Key sections:</b><br>• Sales performance (daily/weekly/monthly)<br>• Customer acquisition metrics<br>• Product performance rankings<br>• Geographic distribution<br>• Conversion funnels<br><br>You can create custom reports and set up automated email deliveries.",
+        icon: "📈"
+      }
+    };
+
+    function getBotReply(message) {
+      message = message.toLowerCase();
+      for (const key in faq) {
+        if (message.includes(key)) {
+          return {
+            text: `${faq[key].icon} ${faq[key].answer}`,
+            delay: 1500 + (Math.random() * 1000)
+          };
+        }
+      }
+      return {
+        text: "🤖 I'm constantly learning! While I don't have an answer for that specific question yet, I excel at helping with:<br><br>• Product catalog management<br>• Inventory tracking<br>• Customer data analysis<br>• Business performance metrics<br><br>Try rephrasing or ask about one of these areas!",
+        delay: 2000
+      };
+    }
+
+    function showTypingIndicator() {
+      const typing = document.createElement("div");
+      typing.className = "message typing-indicator";
+      typing.innerHTML = `
+        <span>Assistant is typing</span>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      `;
+      chatContainer.appendChild(typing);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+      return typing;
+    }
+
+    function removeTypingIndicator(typingElement) {
+      if (typingElement && typingElement.parentNode) {
+        typingElement.parentNode.removeChild(typingElement);
+      }
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      // Add user message
+      addMessage(message, "user");
+      userInput.value = "";
+      updateSuggestions("");
+
+      // Show typing indicator
+      const typingElement = showTypingIndicator();
+
+      // Get bot reply after delay
+      const replyData = getBotReply(message);
+      
+      setTimeout(() => {
+        removeTypingIndicator(typingElement);
+        addMessage(replyData.text, "bot");
+      }, replyData.delay);
+    }
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.className = `message ${sender}-message`;
+      msg.innerHTML = `${text}<div class="message-time">${formatTime()}</div>`;
+      chatContainer.appendChild(msg);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function formatTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function updateSuggestions(input) {
+      suggestions.innerHTML = "";
+      if (input.length < 1) {
+        // Show default suggestions when input is empty
+        const defaults = [
+          "How to add products?",
+          "View customer data", 
+          "Download reports",
+          "Analytics dashboard"
+        ];
+        defaults.forEach(text => {
+          const button = document.createElement("button");
+          button.className = "suggestion-chip";
+          button.textContent = text;
+          button.onclick = () => {
+            userInput.value = text;
+            userInput.focus();
+          };
+          suggestions.appendChild(button);
+        });
+        return;
+      }
+
+      const matches = Object.keys(faq).filter(key => 
+        key.includes(input.toLowerCase())
+      );
+      
+      matches.slice(0, 4).forEach(match => {
+        const button = document.createElement("button");
+        button.className = "suggestion-chip";
+        button.textContent = match;
+        button.onclick = () => {
+          userInput.value = match;
+          userInput.focus();
+        };
+        suggestions.appendChild(button);
+      });
+    }
+
+    function suggestClick(element) {
+      userInput.value = element.textContent;
+      userInput.focus();
+    }
+
+    // Event listeners
+    userInput.addEventListener("input", e => updateSuggestions(e.target.value));
+    userInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    // Initialize with default suggestions
+    updateSuggestions("");
+  </script>
+</body>
+</html>

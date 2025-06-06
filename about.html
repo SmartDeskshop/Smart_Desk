@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us - SmartDesk</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --rounded-sm: 0.25rem;
+      --rounded: 0.5rem;
+      --rounded-lg: 0.75rem;
+      --rounded-full: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: var(--white);
+      padding: 5rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      bottom: -80px;
+      right: -80px;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+    }
+
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    header h1 {
+      font-size: 2.75rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    header p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    .section {
+      margin-bottom: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .section-content {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .section h2 {
+      color: var(--primary);
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section h2::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 50px;
+      height: 4px;
+      background-color: var(--accent);
+      border-radius: 2px;
+    }
+
+    .section p {
+      margin-bottom: 1.25rem;
+      font-size: 1.1rem;
+      color: var(--dark);
+    }
+
+    .section p strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .values-list {
+      list-style: none;
+      margin: 2rem 0;
+    }
+
+    .values-list li {
+      margin-bottom: 1.25rem;
+      padding-left: 2.5rem;
+      position: relative;
+      font-size: 1.1rem;
+    }
+
+    .values-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      background-color: var(--accent);
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      mask-repeat: no-repeat;
+      mask-position: center;
+      background-color: var(--primary);
+    }
+
+    .team-card {
+      background-color: var(--white);
+      border-radius: var(--rounded-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      max-width: 600px;
+    }
+
+    .team-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: var(--light-gray);
+      margin-right: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 2.5rem;
+      font-weight: 600;
+    }
+
+    .team-info h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .team-info p {
+      color: var(--gray);
+      font-size: 1rem;
+    }
+
+    .cta-section {
+      text-align: center;
+      background-color: var(--white);
+      padding: 4rem 2rem;
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--shadow-md);
+      margin: 4rem auto;
+      max-width: 800px;
+    }
+
+    .cta-section h2 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: center;
+      text-decoration: none;
+      border-radius: var(--rounded-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 1rem;
+      background-color: var(--dark);
+      color: var(--light);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links a {
+      color: var(--light);
+      margin: 0 1rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .social-links {
+      margin-bottom: 2rem;
+    }
+
+    .social-links a {
+      color: var(--light);
+      margin: 0 0.75rem;
+      font-size: 1.25rem;
+      transition: color 0.2s;
+    }
+
+    .social-links a:hover {
+      color: var(--accent);
+    }
+
+    .copyright {
+      opacity: 0.8;
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.25rem;
+      }
+
+      header p {
+        font-size: 1.1rem;
+      }
+
+      .section h2 {
+        font-size: 1.75rem;
+      }
+
+      .team-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .team-avatar {
+        margin-right: 0;
+        margin-bottom: 1.5rem;
+      }
+
+      .values-list li {
+        padding-left: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <h1>About SmartDesk</h1>
+      <p>Revolutionizing retail management with intuitive, powerful tools for businesses of all sizes</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="section">
+      <div class="section-content">
+        <h2>Who We Are</h2>
+        <p><strong>SmartDesk</strong> is a comprehensive retail management platform designed to streamline operations, enhance customer experiences, and drive business growth. Our cloud-based solution combines inventory management, point-of-sale, customer relationship tools, and advanced analytics in one intuitive interface.</p>
+        <p>Whether you're running a small neighborhood shop or managing multiple retail locations, our platform adapts to your needs, helping you work smarter, not harder.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-content">
+        <h2>Our Mission</h2>
+        <p>To democratize retail technology by providing affordable, enterprise-grade tools to businesses of all sizes. We believe every retailer deserves access to the same powerful technology that large chains use, without the complexity or high costs.</p>
+        <p>Our mission is to help local businesses thrive in an increasingly digital world by removing technological barriers and empowering shop owners with actionable insights.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-content">
+        <h2>Why Choose Us?</h2>
+        <ul class="values-list">
+          <li><strong>Simple yet powerful</strong> - Intuitive interface with advanced capabilities</li>
+          <li><strong>Real-time insights</strong> - Make data-driven decisions with live analytics</li>
+          <li><strong>Cloud reliability</strong> - Secure, automatic backups with 99.9% uptime</li>
+          <li><strong>Mobile optimized</strong> - Manage your business from anywhere</li>
+          <li><strong>Scalable solutions</strong> - Grows with your business needs</li>
+          <li><strong>Exceptional support</strong> - Dedicated help when you need it</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-content">
+        <h2>Our Founder</h2>
+        <p>SmartDesk was born from a passion for solving real-world business challenges through technology.</p>
+        
+        <div class="team-card">
+          <div class="team-avatar">OJ</div>
+          <div class="team-info">
+            <h3>Omkar Sanjay Jadhav</h3>
+            <p>Founder & Lead Developer</p>
+            <p>Computer Science student and entrepreneur dedicated to building solutions that make a difference for small businesses.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h2>Ready to Transform Your Business?</h2>
+      <p>Join thousands of retailers who are saving time, reducing costs, and growing their businesses with SmartDesk.</p>
+      <button class="btn btn-primary">Start Your Free Trial</button>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://www.facebook.com/share/1C32iSd4e8/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+ 
+        <a href="https://www.instagram.com/omkarjadhav1k.in/profilecard/?igsh=eDZxbHhwa3d2M3I4" target="_blank"><i class="fab fa-instagram"></i></a>
+      </div>
+      <div class="footer-links">
+        <a href="Features.html">Features</a>
+        <a href="rate-pricing.html">Pricing</a>
+        <a href="maintenance.html">Case Studies</a>
+        <a href="help.html">Support</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <p class="copyright">&copy; 2025 SmartDesk. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

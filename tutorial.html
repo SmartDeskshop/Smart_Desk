@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Master Smart Shop Manager | Advanced Retail Management Tutorial</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2a5bd7;
+      --secondary: #00c3a5;
+      --dark: #1a2238;
+      --light: #f8f9ff;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8f9ff;
+      margin: 0;
+      padding: 0;
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), #4a6cf7);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 Q50,80 0,100 Z"></path></svg>');
+      background-size: cover;
+      opacity: 0.5;
+    }
+
+    header .header-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    header p {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin-bottom: 25px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background-color: var(--secondary);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 195, 165, 0.3);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 195, 165, 0.4);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 60px;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      border-top: 4px solid var(--primary);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.4rem;
+      margin: 0 0 15px 0;
+      color: var(--dark);
+    }
+
+    .feature-card p {
+      color: #666;
+      margin: 0;
+    }
+
+    .step {
+      background: white;
+      padding: 30px;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      counter-increment: step-counter;
+    }
+
+    .step::before {
+      content: counter(step-counter);
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 5rem;
+      font-weight: 700;
+      color: rgba(42, 91, 215, 0.05);
+      z-index: 0;
+    }
+
+    .step h2 {
+      font-size: 1.6rem;
+      color: var(--primary);
+      margin-top: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .step h2 i {
+      margin-right: 15px;
+      font-size: 1.4rem;
+    }
+
+    .step p {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      color: #555;
+      position: relative;
+    }
+
+    .step .highlight {
+      background-color: rgba(0, 195, 165, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--secondary);
+      font-weight: 500;
+    }
+
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      text-align: left;
+    }
+
+    .footer-column h3 {
+      color: var(--secondary);
+      margin-top: 0;
+    }
+
+    .footer-column ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-column ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-column a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-column a:hover {
+      color: white;
+    }
+
+    .copyright {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.2rem;
+      }
+      
+      header p {
+        font-size: 1.1rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Add numbering to steps */
+    .steps-container {
+      counter-reset: step-counter;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <h1>Smart Shop Manager Pro</h1>
+      <p>Transform your retail business with our AI-powered inventory and sales management system</p>
+      <a href="#tutorial" class="cta-button">Start Tutorial</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2 style="text-align: center; font-size: 2rem; margin-bottom: 40px; color: var(--dark);">Unique Professional Features</h2>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-robot"></i>
+        </div>
+        <h3>AI Inventory Forecasting</h3>
+        <p>Our machine learning algorithms predict stock requirements based on sales patterns, seasonality, and market trends.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-camera-retro"></i>
+        </div>
+        <h3>Visual Product Recognition</h3>
+        <p>Scan products using your camera for instant inventory updates. No manual barcode entry needed.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chart-network"></i>
+        </div>
+        <h3>Supplier Network Analytics</h3>
+        <p>Compare supplier performance, track lead times, and optimize your procurement strategy.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-wallet"></i>
+        </div>
+        <h3>Multi-Payment Integration</h3>
+        <p>Accept all payment methods including mobile wallets, cryptocurrency, and contactless payments.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-user-tag"></i>
+        </div>
+        <h3>Smart Customer Profiling</h3>
+        <p>Automated customer segmentation and personalized marketing recommendations.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-cloud-upload-alt"></i>
+        </div>
+        <h3>Blockchain Backup</h3>
+        <p>Secure, tamper-proof record keeping with decentralized blockchain technology.</p>
+      </div>
+    </div>
+
+    <div id="tutorial" class="steps-container">
+      <h2 style="text-align: center; font-size: 2rem; margin-bottom: 40px; color: var(--dark);">Step-by-Step Tutorial</h2>
+
+      <div class="step">
+        <h2><i class="fas fa-user-plus"></i> Intelligent Onboarding</h2>
+        <p>Our <span class="highlight">AI-powered setup wizard</span> analyzes your business type to recommend optimal settings. Connect your bank accounts, tax IDs, and existing systems in minutes.</p>
+      </div>
+
+      <div class="step">
+        <h2><i class="fas fa-barcode"></i> Smart Inventory Setup</h2>
+        <p>Use our <span class="highlight">bulk import tools</span> or mobile app to photograph your existing stock. The system automatically categorizes products and suggests optimal pricing.</p>
+      </div>
+
+      <div class="step">
+        <h2><i class="fas fa-cash-register"></i> Omnichannel POS</h2>
+        <p>Seamlessly manage in-store, online, and mobile sales through our <span class="highlight">unified POS system</span>. Supports all payment methods with automatic reconciliation.</p>
+      </div>
+
+      <div class="step">
+        <h2><i class="fas fa-network-wired"></i> Supply Chain Integration</h2>
+        <p>Connect directly to suppliers for <span class="highlight">automated reordering</span>. Our system negotiates better rates based on your purchase history and market conditions.</p>
+      </div>
+
+      <div class="step">
+        <h2><i class="fas fa-brain"></i> Business Intelligence</h2>
+        <p>Access <span class="highlight">predictive analytics</span> that identify growth opportunities, slow-moving stock, and customer buying patterns before you notice them.</p>
+      </div>
+
+      <div class="step">
+        <h2><i class="fas fa-shield-alt"></i> Compliance Automation</h2>
+        <p>Stay protected with <span class="highlight">auto-generated tax reports</span>, inventory audits, and regulatory compliance documentation tailored to your location.</p>
+      </div>
+
+      <div class="step">
+        <h2><i class="fas fa-mobile-alt"></i> Mobile Management</h2>
+        <p>Control every aspect of your business from our <span class="highlight">award-winning mobile app</span>, featuring augmented reality for stock takes and virtual store planning.</p>
+      </div>
+
+      <div class="step">
+        <h2><i class="fas fa-graduation-cap"></i> Continuous Learning</h2>
+        <p>Access our <span class="highlight">interactive knowledge base</span> with video tutorials, live webinars, and personalized coaching to master advanced features.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>Product</h3>
+        <ul>
+          <li><a href="Features.html">Features</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Resources</h3>
+        <ul>
+        
+          <li><a href="maintenance.html">API Reference</a></li>
+          <li><a href="maintenance.html">Community</a></li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+         
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="PrivacyPolicy.html">Privacy Policy</a></li>
+          <li><a href="term.html">Terms of Service</a></li>
+          
+          
+        </ul>
+      </div>
+    </div>
+    
+    <div class="copyright">
+      &copy; 2025 Smart Shop Manager Pro. All rights reserved.<br>
+      Revolutionizing retail management through artificial intelligence.
+    </div>
+  </footer>
+
+</body>
+</html>

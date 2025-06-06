@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Notifications</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .notification {
+      border-left: 5px solid #007bff;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .notification h4 {
+      margin: 0 0 5px;
+      color: #007bff;
+    }
+
+    .notification p {
+      margin: 0;
+      color: #555;
+    }
+
+    .notification small {
+      display: block;
+      margin-top: 8px;
+      color: #999;
+      font-size: 0.85em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔔 Notifications</h2>
+    <div id="notificationsList"></div>
+  </div>
+
+  <script>
+    // Replace with your Firebase config
+    const firebaseConfig = {
+  apiKey: "AIzaSyAEZzbOune3lfB2YFkYMSlg2CZJbAlGQdw",
+  authDomain: "smartshopmanager59.firebaseapp.com",
+  projectId: "smartshopmanager59",
+  storageBucket: "smartshopmanager59.appspot.com",
+  messagingSenderId: "697076760349",
+  appId: "1:697076760349:web:484fd62ea3806a3f92ebf4"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const notificationsList = document.getElementById("notificationsList");
+
+    db.collection("notifications")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        notificationsList.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const notif = document.createElement("div");
+          notif.className = "notification";
+
+          const time = data.timestamp?.toDate().toLocaleString() || "Just now";
+
+          notif.innerHTML = `
+            <h4>${data.title}</h4>
+            <p>${data.body}</p>
+            <small>${time}</small>
+          `;
+
+          notificationsList.appendChild(notif);
+        });
+      });
+  </script>
+</body>
+</html>

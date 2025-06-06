@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management | Dashboard</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --border-radius: 0.375rem;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: rgb(32, 32, 41);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 0 1rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-header h2 {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 1.5rem;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-profile {
+            position: relative;
+        }
+
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .profile-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .profile-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            box-shadow: var(--shadow-md);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 200px;
+            z-index: 10;
+            display: none;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .profile-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .profile-dropdown a:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .invalid-feedback {
+            display: none;
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--danger-color);
+        }
+
+        .is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.625rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #cbd5e1;
+            color: #64748b;
+        }
+
+        .btn-outline:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #0d9488;
+        }
+
+        /* Badge Styles */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .badge-regular {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .badge-premium {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-vip {
+            background-color: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .badge-wholesale {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .table th {
+            background-color: #f1f5f9;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Stats Card Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        /* Toast Styles */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            background-color: white;
+            margin-bottom: 0.5rem;
+            max-width: 350px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .toast-info {
+            border-left: 4px solid var(--info-color);
+        }
+
+        .toast-warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .toast-icon {
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .toast-success .toast-icon {
+            color: var(--success-color);
+        }
+
+        .toast-error .toast-icon {
+            color: var(--danger-color);
+        }
+
+        .toast-info .toast-icon {
+            color: var(--info-color);
+        }
+
+        .toast-warning .toast-icon {
+            color: var(--warning-color);
+        }
+
+        .toast-body {
+            flex: 1;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid rgba(79, 70, 229, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>SmartDesk</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="costomer.html" class="active"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="Product.html"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="invoice.html"><i class="fas fa-file-invoice-dollar"></i> Invoices</a></li>
+                <li><a href="report.html"><i class="fas fa-chart-line"></i> Reports</a></li>
+                <li><a href="setting.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>Customer Management</h1>
+                <div class="header-actions">
+                    <div id="currentDateTime" class="text-sm text-gray-500"></div>
+                    <div class="user-profile">
+                        <button class="profile-btn" id="profileBtn">
+                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=4f46e5&color=fff" alt="User" class="profile-img">
+                            <span>John Doe</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <a href="profile.html"><i class="fas fa-user mr-2"></i> Profile</a>
+                            <a href="setting.html"><i class="fas fa-cog mr-2"></i> Settings</a>
+                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Customers</h3>
+                    <p id="totalCustomers">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>New Today</h3>
+                    <p id="newToday">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Top City</h3>
+                    <p id="topCity">-</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Premium Customers</h3>
+                    <p id="premiumCustomers">0</p>
+                </div>
+            </div>
+
+            <!-- Customer Form Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="formTitle">Add New Customer</h2>
+                </div>
+                <form id="customerForm">
+                    <input type="hidden" id="customerId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="fullName" required>
+                            <div class="invalid-feedback">Please provide a full name.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile" class="form-label">Mobile Number *</label>
+                            <input type="tel" class="form-control" id="mobile" required>
+                            <div class="invalid-feedback">Please provide a valid mobile number.</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email">
+                            <div class="invalid-feedback">Please provide a valid email.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerType" class="form-label">Customer Type</label>
+                            <select class="form-control" id="customerType">
+                                <option value="regular">Regular</option>
+                                <option value="premium">Premium</option>
+                                <option value="vip">VIP</option>
+                                <option value="wholesale">Wholesale</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city">
+                        </div>
+                        <div class="form-group">
+                            <label for="state" class="form-label">State</label>
+                            <input type="text" class="form-control" id="state">
+                        </div>
+                        <div class="form-group">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <input type="text" class="form-control" id="pincode">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span id="submitBtnText">Add Customer</span>
+                            <span class="spinner" id="submitSpinner" style="display: none;"></span>
+                        </button>
+                        <button type="button" class="btn btn-outline" id="cancelBtn" style="display: none;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Recent Customers Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Customers</h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="table" id="recentCustomersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Added On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentCustomersBody">
+                            <!-- Recent customers will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- All Customers Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <h2>All Customers</h2>
+                        <div style="display: flex; gap: 1rem;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <select class="form-control" id="filterType">
+                                    <option value="">All Types</option>
+                                    <option value="regular">Regular</option>
+                                    <option value="premium">Premium</option>
+                                    <option value="vip">VIP</option>
+                                    <option value="wholesale">Wholesale</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+                            </div>
+                            <button class="btn btn-outline" id="exportBtn">
+                                <i class="fas fa-file-export"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table" id="customersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Added On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersBody">
+                            <!-- Customers will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-users"></i>
+                    <h3>No customers found</h3>
+                    <p>Add your first customer using the form above</p>
+                </div>
+                <div class="empty-state" id="loadingState">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading customers...</h3>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+  apiKey: "AIzaSyAEZzbOune3lfB2YFkYMSlg2CZJbAlGQdw",
+  authDomain: "smartshopmanager59.firebaseapp.com",
+  projectId: "smartshopmanager59",
+  storageBucket: "smartshopmanager59.appspot.com",
+  messagingSenderId: "697076760349",
+  appId: "1:697076760349:web:484fd62ea3806a3f92ebf4"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // DOM Elements
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const currentDateTime = document.getElementById('currentDateTime');
+        const customerForm = document.getElementById('customerForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitBtnText = document.getElementById('submitBtnText');
+        const submitSpinner = document.getElementById('submitSpinner');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const formTitle = document.getElementById('formTitle');
+        const customerId = document.getElementById('customerId');
+        const recentCustomersBody = document.getElementById('recentCustomersBody');
+        const customersBody = document.getElementById('customersBody');
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const filterType = document.getElementById('filterType');
+        const searchInput = document.getElementById('searchInput');
+        const exportBtn = document.getElementById('exportBtn');
+        const toastContainer = document.getElementById('toastContainer');
+        const totalCustomersEl = document.getElementById('totalCustomers');
+        const newTodayEl = document.getElementById('newToday');
+        const topCityEl = document.getElementById('topCity');
+        const premiumCustomersEl = document.getElementById('premiumCustomers');
+
+        // Global variables
+        let currentUser = null;
+        let customers = [];
+        let isEditing = false;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth();
+            initDateTime();
+            initEventListeners();
+        });
+
+        // Initialize authentication
+        function initAuth() {
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    updateProfileInfo(user);
+                    loadCustomers();
+                } else {
+                    window.location.href = 'signin.html';
+                }
+            });
+        }
+
+        // Update profile information in the header
+        function updateProfileInfo(user) {
+            const profileImg = document.querySelector('.profile-img');
+            const profileName = document.querySelector('.profile-btn span');
+            
+            profileName.textContent = user.displayName || 'User';
+            
+            if (user.photoURL) {
+                profileImg.src = user.photoURL;
+            } else {
+                const name = user.displayName || 'User';
+                profileImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff`;
+            }
+        }
+
+        // Initialize date and time display
+        function initDateTime() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            currentDateTime.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Initialize event listeners
+        function initEventListeners() {
+            // Profile dropdown toggle
+            profileBtn.addEventListener('click', () => {
+                profileDropdown.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.remove('show');
+                }
+            });
+
+            // Logout button
+            logoutBtn.addEventListener('click', () => {
+                auth.signOut().then(() => {
+                    window.location.href = 'signin.html';
+                }).catch(error => {
+                    showToast('Error logging out: ' + error.message, 'error');
+                });
+            });
+
+            // Form submission
+            customerForm.addEventListener('submit', handleFormSubmit);
+
+            // Cancel edit button
+            cancelBtn.addEventListener('click', resetForm);
+
+            // Filter and search
+            filterType.addEventListener('change', filterCustomers);
+            searchInput.addEventListener('input', filterCustomers);
+
+            // Export button
+            exportBtn.addEventListener('click', exportToCSV);
+        }
+
+        // Handle form submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!validateForm()) {
+                return;
+            }
+
+            // Get form data
+            const customerData = {
+                fullName: document.getElementById('fullName').value.trim(),
+                mobile: document.getElementById('mobile').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                address: document.getElementById('address').value.trim(),
+                city: document.getElementById('city').value.trim(),
+                state: document.getElementById('state').value.trim(),
+                pincode: document.getElementById('pincode').value.trim(),
+                customerType: document.getElementById('customerType').value,
+                notes: document.getElementById('notes').value.trim(),
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtnText.textContent = isEditing ? 'Updating...' : 'Adding...';
+            submitSpinner.style.display = 'inline-block';
+
+            if (isEditing) {
+                // Update existing customer
+                const docId = customerId.value;
+                db.collection(`users/${currentUser.uid}/customers`).doc(docId)
+                    .update(customerData)
+                    .then(() => {
+                        showToast('Customer updated successfully', 'success');
+                        resetForm();
+                        loadCustomers();
+                    })
+                    .catch(error => {
+                        showToast('Error updating customer: ' + error.message, 'error');
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtnText.textContent = 'Add Customer';
+                        submitSpinner.style.display = 'none';
+                    });
+            } else {
+                // Add new customer
+                db.collection(`users/${currentUser.uid}/customers`)
+                    .add(customerData)
+                    .then(() => {
+                        showToast('Customer added successfully', 'success');
+                        resetForm();
+                        loadCustomers();
+                    })
+                    .catch(error => {
+                        showToast('Error adding customer: ' + error.message, 'error');
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtnText.textContent = 'Add Customer';
+                        submitSpinner.style.display = 'none';
+                    });
+            }
+        }
+
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            const fullName = document.getElementById('fullName');
+            const mobile = document.getElementById('mobile');
+            const email = document.getElementById('email');
+
+            // Reset validation
+            fullName.classList.remove('is-invalid');
+            mobile.classList.remove('is-invalid');
+            email.classList.remove('is-invalid');
+
+            // Validate full name
+            if (!fullName.value.trim()) {
+                fullName.classList.add('is-invalid');
+                isValid = false;
+            }
+
+            // Validate mobile
+            if (!mobile.value.trim()) {
+                mobile.classList.add('is-invalid');
+                isValid = false;
+            } else if (!/^[\d\+\-\(\) ]+$/.test(mobile.value)) {
+                mobile.classList.add('is-invalid');
+                mobile.nextElementSibling.textContent = 'Please enter a valid mobile number';
+                isValid = false;
+            }
+
+            // Validate email if provided
+            if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                email.classList.add('is-invalid');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Reset form to add new customer state
+        function resetForm() {
+            customerForm.reset();
+            customerId.value = '';
+            isEditing = false;
+            formTitle.textContent = 'Add New Customer';
+            submitBtnText.textContent = 'Add Customer';
+            cancelBtn.style.display = 'none';
+            
+            // Reset validation
+            document.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+        }
+
+        // Load customers from Firestore
+        function loadCustomers() {
+            loadingState.style.display = 'block';
+            emptyState.style.display = 'none';
+            customersBody.innerHTML = '';
+            recentCustomersBody.innerHTML = '';
+
+            db.collection(`users/${currentUser.uid}/customers`)
+                .orderBy('createdAt', 'desc')
+                .get()
+                .then(querySnapshot => {
+                    customers = [];
+                    let today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    let newTodayCount = 0;
+                    let cityCounts = {};
+                    let premiumCount = 0;
+
+                    querySnapshot.forEach(doc => {
+                        const customer = {
+                            id: doc.id,
+                            ...doc.data(),
+                            createdAt: doc.data().createdAt?.toDate() || new Date(),
+                            updatedAt: doc.data().updatedAt?.toDate() || new Date()
+                        };
+                        customers.push(customer);
+
+                        // Count new today
+                        if (customer.createdAt >= today) {
+                            newTodayCount++;
+                        }
+
+                        // Count by city
+                        if (customer.city) {
+                            cityCounts[customer.city] = (cityCounts[customer.city] || 0) + 1;
+                        }
+
+                        // Count premium customers
+                        if (customer.customerType === 'premium' || customer.customerType === 'vip') {
+                            premiumCount++;
+                        }
+                    });
+
+                    // Update stats
+                    totalCustomersEl.textContent = customers.length;
+                    newTodayEl.textContent = newTodayCount;
+                    premiumCustomersEl.textContent = premiumCount;
+
+                    // Find top city
+                    let topCity = '-';
+                    let maxCount = 0;
+                    for (const city in cityCounts) {
+                        if (cityCounts[city] > maxCount) {
+                            maxCount = cityCounts[city];
+                            topCity = city;
+                        }
+                    }
+                    topCityEl.textContent = topCity;
+
+                    // Render customers
+                    renderRecentCustomers();
+                    renderCustomers();
+
+                    if (customers.length === 0) {
+                        emptyState.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    showToast('Error loading customers: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    loadingState.style.display = 'none';
+                });
+        }
+
+        // Render recent customers (last 5)
+        function renderRecentCustomers() {
+            const recentCustomers = customers.slice(0, 5);
+            recentCustomersBody.innerHTML = '';
+
+            if (recentCustomers.length === 0) {
+                recentCustomersBody.innerHTML = '<tr><td colspan="6" class="text-center py-4">No recent customers</td></tr>';
+                return;
+            }
+
+            recentCustomers.forEach(customer => {
+                const row = document.createElement('tr');
+                if (isNewToday(customer.createdAt)) {
+                    row.classList.add('bg-blue-50');
+                }
+
+                row.innerHTML = `
+                    <td>
+                        <div class="font-medium">${customer.fullName}</div>
+                        ${customer.notes ? `<div class="text-xs text-gray-500">${customer.notes}</div>` : ''}
+                    </td>
+                    <td>
+                        <div>${customer.mobile}</div>
+                        ${customer.email ? `<div class="text-xs text-gray-500">${customer.email}</div>` : ''}
+                    </td>
+                    <td><span class="badge badge-${customer.customerType}">${customer.customerType}</span></td>
+                    <td>
+                        ${customer.city ? `<div>${customer.city}</div>` : ''}
+                        ${customer.state ? `<div class="text-xs text-gray-500">${customer.state}</div>` : ''}
+                    </td>
+                    <td>${formatDate(customer.createdAt)}</td>
+                    <td class="table-actions">
+                        <button class="btn btn-outline btn-sm edit-btn" data-id="${customer.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline btn-sm delete-btn" data-id="${customer.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+
+                recentCustomersBody.appendChild(row);
+            });
+
+            // Add event listeners to buttons
+            addEditDeleteListeners();
+        }
+
+        // Render all customers with filtering
+        function renderCustomers(filteredCustomers = null) {
+            const customersToRender = filteredCustomers || customers;
+            customersBody.innerHTML = '';
+
+            if (customersToRender.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            customersToRender.forEach(customer => {
+                const row = document.createElement('tr');
+                if (isNewToday(customer.createdAt)) {
+                    row.classList.add('bg-blue-50');
+                }
+
+                row.innerHTML = `
+                    <td>
+                        <div class="font-medium">${customer.fullName}</div>
+                        ${customer.notes ? `<div class="text-xs text-gray-500">${customer.notes}</div>` : ''}
+                    </td>
+                    <td>
+                        <div>${customer.mobile}</div>
+                        ${customer.email ? `<div class="text-xs text-gray-500">${customer.email}</div>` : ''}
+                    </td>
+                    <td><span class="badge badge-${customer.customerType}">${customer.customerType}</span></td>
+                    <td>
+                        ${customer.city ? `<div>${customer.city}</div>` : ''}
+                        ${customer.state ? `<div class="text-xs text-gray-500">${customer.state}</div>` : ''}
+                    </td>
+                    <td>${formatDate(customer.createdAt)}</td>
+                    <td class="table-actions">
+                        <button class="btn btn-outline btn-sm edit-btn" data-id="${customer.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline btn-sm delete-btn" data-id="${customer.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+
+                customersBody.appendChild(row);
+            });
+
+            // Add event listeners to buttons
+            addEditDeleteListeners();
+        }
+
+        // Add event listeners to edit and delete buttons
+        function addEditDeleteListeners() {
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const docId = btn.getAttribute('data-id');
+                    editCustomer(docId);
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const docId = btn.getAttribute('data-id');
+                    deleteCustomer(docId);
+                });
+            });
+        }
+
+        // Edit customer
+        function editCustomer(docId) {
+            const customer = customers.find(c => c.id === docId);
+            if (!customer) return;
+
+            isEditing = true;
+            formTitle.textContent = 'Edit Customer';
+            submitBtnText.textContent = 'Update Customer';
+            cancelBtn.style.display = 'inline-block';
+
+            // Populate form
+            customerId.value = docId;
+            document.getElementById('fullName').value = customer.fullName || '';
+            document.getElementById('mobile').value = customer.mobile || '';
+            document.getElementById('email').value = customer.email || '';
+            document.getElementById('address').value = customer.address || '';
+            document.getElementById('city').value = customer.city || '';
+            document.getElementById('state').value = customer.state || '';
+            document.getElementById('pincode').value = customer.pincode || '';
+            document.getElementById('customerType').value = customer.customerType || 'regular';
+            document.getElementById('notes').value = customer.notes || '';
+
+            // Scroll to form
+            customerForm.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Delete customer
+        function deleteCustomer(docId) {
+            if (!confirm('Are you sure you want to delete this customer?')) {
+                return;
+            }
+
+            db.collection(`users/${currentUser.uid}/customers`).doc(docId)
+                .delete()
+                .then(() => {
+                    showToast('Customer deleted successfully', 'success');
+                    loadCustomers();
+                })
+                .catch(error => {
+                    showToast('Error deleting customer: ' + error.message, 'error');
+                });
+        }
+
+        // Filter customers by type and search term
+        function filterCustomers() {
+            const type = filterType.value;
+            const searchTerm = searchInput.value.toLowerCase();
+
+            let filtered = customers;
+
+            // Filter by type
+            if (type) {
+                filtered = filtered.filter(customer => customer.customerType === type);
+            }
+
+            // Filter by search term
+            if (searchTerm) {
+                filtered = filtered.filter(customer => 
+                    customer.fullName.toLowerCase().includes(searchTerm) ||
+                    customer.mobile.toLowerCase().includes(searchTerm) ||
+                    (customer.email && customer.email.toLowerCase().includes(searchTerm)) ||
+                    (customer.city && customer.city.toLowerCase().includes(searchTerm)) ||
+                    (customer.state && customer.state.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            renderCustomers(filtered);
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            let csv = 'Name,Mobile,Email,Address,City,State,Pincode,Type,Notes,Created At\n';
+            
+            customers.forEach(customer => {
+                csv += `"${customer.fullName || ''}","${customer.mobile || ''}","${customer.email || ''}","${customer.address || ''}",`;
+                csv += `"${customer.city || ''}","${customer.state || ''}","${customer.pincode || ''}","${customer.customerType || ''}",`;
+                csv += `"${customer.notes || ''}","${formatDate(customer.createdAt, true)}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `customers_${new Date().toISOString().slice(0, 10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            const icon = type === 'success' ? 'check-circle' : 
+                        type === 'error' ? 'times-circle' : 
+                        type === 'warning' ? 'exclamation-circle' : 'info-circle';
+            
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas fa-${icon}"></i>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button class="toast-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            const closeBtn = toast.querySelector('.toast-close');
+            closeBtn.addEventListener('click', () => {
+                toast.remove();
+            });
+
+            toastContainer.appendChild(toast);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+
+        // Helper function to format date
+        function formatDate(date, forCSV = false) {
+            if (!date) return '';
+            const d = new Date(date);
+            
+            if (forCSV) {
+                return d.toISOString().slice(0, 10);
+            }
+            
+            return d.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Helper function to check if date is today
+        function isNewToday(date) {
+            if (!date) return false;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return new Date(date) >= today;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .admin-nav {
+      background-color: #2c3e50;
+      min-height: 100vh;
+      color: white;
+      padding: 20px 0;
+    }
+    .admin-content {
+      padding: 20px;
+    }
+    .admin-card {
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border: none;
+      border-radius: 10px;
+    }
+    .welcome-header {
+      background: linear-gradient(135deg, #4361ee, #3f37c9);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2 admin-nav">
+        <h4 class="text-center mb-4">Admin Panel</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link text-white active" href="#" id="dashboard-tab">
+              <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#" id="users-tab">
+              <i class="fas fa-users me-2"></i>Users
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#" id="products-tab">
+              <i class="fas fa-boxes me-2"></i>Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#" id="settings-tab">
+              <i class="fas fa-cog me-2"></i>Settings
+            </a>
+          </li>
+          <li class="nav-item mt-4">
+            <a class="nav-link text-white" href="#" id="logout-btn">
+              <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="col-md-10 admin-content">
+        <div class="welcome-header">
+          <h2 id="admin-greeting">Welcome back, Admin</h2>
+          <p id="admin-email-display">omkarjadhav1k@gmail.com</p>
+        </div>
+        
+        <div class="alert alert-danger" id="error-message" style="display:none;"></div>
+        
+        <!-- Dashboard Content -->
+        <div id="dashboard-content">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card admin-card">
+                <div class="card-body">
+                  <h5 class="card-title"><i class="fas fa-users me-2"></i>Total Users</h5>
+                  <p class="card-text display-4" id="total-users">0</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card admin-card">
+                <div class="card-body">
+                  <h5 class="card-title"><i class="fas fa-box me-2"></i>Total Products</h5>
+                  <p class="card-text display-4" id="total-products">0</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card admin-card">
+                <div class="card-body">
+                  <h5 class="card-title"><i class="fas fa-shopping-cart me-2"></i>Today's Orders</h5>
+                  <p class="card-text display-4" id="total-orders">0</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Users Management Content -->
+        <div id="users-content" style="display:none;">
+          <div class="card admin-card">
+            <div class="card-body">
+              <h4 class="card-title"><i class="fas fa-users me-2"></i>User Management</h4>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Email</th>
+                      <th>Name</th>
+                      <th>Admin</th>
+                      <th>Joined</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-table">
+                    <!-- Users will be loaded here -->
+                    <tr>
+                      <td colspan="5" class="text-center">Loading users...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Font Awesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEZzbOune3lfB2YFkYMSlg2CZJbAlGQdw",
+      authDomain: "smartshopmanager59.firebaseapp.com",
+      projectId: "smartshopmanager59",
+      storageBucket: "smartshopmanager59.appspot.com",
+      messagingSenderId: "697076760349",
+      appId: "1:697076760349:web:484fd62ea3806a3f92ebf4"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    // Check admin status on page load
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = "admin-notification.html";
+        return;
+      }
+      
+      try {
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        
+        if (!userDoc.exists || !userDoc.data().isAdmin) {
+          showError("You don't have admin privileges");
+          setTimeout(() => window.location.href = "dashboard.html", 3000);
+          return;
+        }
+        
+        // User is admin - load data
+        document.getElementById('admin-greeting').textContent = `Welcome back, ${userDoc.data().displayName || 'Admin'}`;
+        document.getElementById('admin-email-display').textContent = user.email;
+        
+        loadDashboardData();
+        setupEventListeners();
+        
+      } catch (error) {
+        showError("Error verifying admin status: " + error.message);
+      }
+    });
+    
+    function setupEventListeners() {
+      // Tab navigation
+      document.getElementById('dashboard-tab').addEventListener('click', (e) => {
+        e.preventDefault();
+        setActiveTab('dashboard-tab');
+        showTab('dashboard');
+      });
+      
+      document.getElementById('users-tab').addEventListener('click', (e) => {
+        e.preventDefault();
+        setActiveTab('users-tab');
+        showTab('users');
+        loadUsers();
+      });
+      
+      // Logout
+      document.getElementById('logout-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        auth.signOut().then(() => {
+          window.location.href = "admin-notification.html";
+        }).catch(error => {
+          showError("Logout failed: " + error.message);
+        });
+      });
+    }
+    
+    function setActiveTab(tabId) {
+      // Remove active class from all tabs
+      document.querySelectorAll('.nav-link').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Add active class to clicked tab
+      document.getElementById(tabId).classList.add('active');
+    }
+    
+    function showTab(tabName) {
+      // Hide all content sections
+      document.querySelectorAll('[id$="-content"]').forEach(section => {
+        section.style.display = 'none';
+      });
+      
+      // Show the selected content section
+      document.getElementById(`${tabName}-content`).style.display = 'block';
+    }
+    
+    async function loadDashboardData() {
+      try {
+        // Get user count
+        const usersSnapshot = await db.collection("users").get();
+        document.getElementById('total-users').textContent = usersSnapshot.size;
+        
+        // Get product count
+        const productsSnapshot = await db.collection("products").get();
+        document.getElementById('total-products').textContent = productsSnapshot.size;
+        
+        // Get today's orders (example - adjust to your data structure)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const ordersSnapshot = await db.collection("orders")
+          .where("createdAt", ">=", today)
+          .get();
+        
+        document.getElementById('total-orders').textContent = ordersSnapshot.size;
+        
+      } catch (error) {
+        showError("Error loading dashboard data: " + error.message);
+      }
+    }
+    
+    async function loadUsers() {
+      try {
+        const usersSnapshot = await db.collection("users").orderBy("createdAt", "desc").get();
+        const usersTable = document.getElementById('users-table');
+        usersTable.innerHTML = '';
+        
+        if (usersSnapshot.empty) {
+          usersTable.innerHTML = '<tr><td colspan="5" class="text-center">No users found</td></tr>';
+          return;
+        }
+        
+        usersSnapshot.forEach(doc => {
+          const user = doc.data();
+          const row = document.createElement('tr');
+          
+          // Format the date
+          const joinedDate = user.createdAt ? user.createdAt.toDate().toLocaleDateString() : 'N/A';
+          
+          row.innerHTML = `
+            <td>${user.email}</td>
+            <td>${user.displayName || 'N/A'}</td>
+            <td>${user.isAdmin ? '<span class="badge bg-success">Admin</span>' : '<span class="badge bg-secondary">User</span>'}</td>
+            <td>${joinedDate}</td>
+            <td>
+              ${!user.isAdmin ? 
+                `<button class="btn btn-sm btn-primary make-admin" data-id="${doc.id}">
+                  <i class="fas fa-user-shield me-1"></i>Make Admin
+                </button>` : ''}
+            </td>
+          `;
+          
+          usersTable.appendChild(row);
+        });
+        
+        // Add event listeners to make-admin buttons
+        document.querySelectorAll('.make-admin').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const userId = e.target.closest('button').getAttribute('data-id');
+            try {
+              await db.collection("users").doc(userId).update({
+                isAdmin: true
+              });
+              loadUsers(); // Refresh the list
+            } catch (error) {
+              showError("Error making user admin: " + error.message);
+            }
+          });
+        });
+        
+      } catch (error) {
+        showError("Error loading users: " + error.message);
+      }
+    }
+    
+    function showError(message) {
+      const errorElement = document.getElementById('error-message');
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+      setTimeout(() => {
+        errorElement.style.display = 'none';
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

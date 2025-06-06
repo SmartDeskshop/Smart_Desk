@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Documentation | SmartDesk</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fb;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #1f2937;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h2 {
+      color: #111827;
+      margin-top: 40px;
+    }
+    .endpoint {
+      background: white;
+      border-left: 5px solid #3b82f6;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    }
+    .method {
+      font-weight: bold;
+      color: #10b981;
+    }
+    .url {
+      font-family: monospace;
+      background: #f3f4f6;
+      padding: 6px 10px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    code {
+      background: #f3f4f6;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📘 SmartDesk API Documentation</h1>
+    <p>RESTful APIs to connect with your SmartShop Manager</p>
+  </header>
+
+  <div class="container">
+    
+    <h2>🔐 Authentication</h2>
+    <div class="endpoint">
+      <div class="method">POST</div>
+      <div class="url">/api/auth/login</div>
+      <p>Login a user using email and password.</p>
+      <p><strong>Body:</strong> <code>{ email, password }</code></p>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">POST</div>
+      <div class="url">/api/auth/signup</div>
+      <p>Register a new user.</p>
+      <p><strong>Body:</strong> <code>{ name, email, password }</code></p>
+    </div>
+
+    <h2>📦 Products</h2>
+    <div class="endpoint">
+      <div class="method">GET</div>
+      <div class="url">/api/products</div>
+      <p>Get all products from stock.</p>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">POST</div>
+      <div class="url">/api/products</div>
+      <p>Add a new product.</p>
+      <p><strong>Body:</strong> <code>{ name, price, quantity }</code></p>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">PUT</div>
+      <div class="url">/api/products/:id</div>
+      <p>Update product details.</p>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">DELETE</div>
+      <div class="url">/api/products/:id</div>
+      <p>Delete a product from inventory.</p>
+    </div>
+
+    <h2>🧾 Orders</h2>
+    <div class="endpoint">
+      <div class="method">POST</div>
+      <div class="url">/api/orders</div>
+      <p>Create a new order.</p>
+      <p><strong>Body:</strong> <code>{ items: [{productId, quantity}], total }</code></p>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">GET</div>
+      <div class="url">/api/orders</div>
+      <p>Get list of all orders placed.</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

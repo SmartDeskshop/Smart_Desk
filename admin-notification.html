@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Smart Shop Manager</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+    .login-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .login-header img {
+      width: 80px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="login-container">
+      <div class="login-header">
+        <img src="https://via.placeholder.com/80" alt="Logo" class="img-fluid">
+        <h3>Admin Login</h3>
+        <p>Access your admin dashboard</p>
+      </div>
+      
+      <div class="alert alert-danger" id="error-message" style="display:none;"></div>
+      <div class="alert alert-success" id="success-message" style="display:none;"></div>
+      
+      <form id="login-form">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" value="omkarjadhav1k@gmail.com" readonly>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" >
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEZzbOune3lfB2YFkYMSlg2CZJbAlGQdw",
+      authDomain: "smartshopmanager59.firebaseapp.com",
+      projectId: "smartshopmanager59",
+      storageBucket: "smartshopmanager59.appspot.com",
+      messagingSenderId: "697076760349",
+      appId: "1:697076760349:web:484fd62ea3806a3f92ebf4"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    
+    // Login form submission
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      // Only allow omkarjadhav1k@gmail.com to login
+      if (email !== "omkarjadhav1k@gmail.com") {
+        showError("Access restricted to admin only");
+        return;
+      }
+      
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Check if this is the admin user
+          if (userCredential.user.email === "omkarjadhav1k@gmail.com") {
+            showSuccess("Login successful! Redirecting...");
+            // Set admin flag in Firestore
+            return firebase.firestore().collection("users").doc(userCredential.user.uid).set({
+              email: userCredential.user.email,
+              isAdmin: true,
+              lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          } else {
+            // Not the admin user - sign them out
+            return auth.signOut().then(() => {
+              throw new Error("Access restricted to admin only");
+            });
+          }
+        })
+        .then(() => {
+          // Redirect to admin dashboard after 2 seconds
+          setTimeout(() => {
+            window.location.href = "admin-dashboard.html";
+          }, 2000);
+        })
+        .catch((error) => {
+          showError(error.message);
+        });
+    });
+    
+    function showError(message) {
+      const errorElement = document.getElementById('error-message');
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+      document.getElementById('success-message').style.display = 'none';
+    }
+    
+    function showSuccess(message) {
+      const successElement = document.getElementById('success-message');
+      successElement.textContent = message;
+      successElement.style.display = 'block';
+      document.getElementById('error-message').style.display = 'none';
+    }
+    
+    // Check if user is already logged in
+    auth.onAuthStateChanged((user) => {
+      if (user && user.email === "omkarjadhav1k@gmail.com") {
+        window.location.href = "admin-dashboard.html";
+      }
+    });
+  </script>
+</body>
+</html>

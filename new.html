@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Income Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h1>Welcome Back!</h1>
+  <h2>Today's Income: ₹<span id="todayIncome">Loading...</span></h2>
+  <h2>This Month: ₹<span id="monthIncome">Loading...</span></h2>
+  <h2>Last Month: ₹<span id="lastMonthIncome">Loading...</span></h2>
+
+  <script>
+    // 🔧 Replace with your Firebase config
+    const firebaseConfig = {
+  apiKey: "AIzaSyAEZzbOune3lfB2YFkYMSlg2CZJbAlGQdw",
+  authDomain: "smartshopmanager59.firebaseapp.com",
+  projectId: "smartshopmanager59",
+  storageBucket: "smartshopmanager59.appspot.com",
+  messagingSenderId: "697076760349",
+  appId: "1:697076760349:web:484fd62ea3806a3f92ebf4"
+    };
+
+    // 🔥 Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ✅ Fetch and Display Income
+    async function fetchIncomeData(currentUser) {
+      const date = new Date();
+      const todayKey = date.toISOString().split("T")[0];        // e.g. "2025-05-30"
+      const monthKey = date.toISOString().slice(0, 7);          // e.g. "2025-05"
+      const lastMonthKey = new Date(date.getFullYear(), date.getMonth() - 1).toISOString().slice(0, 7); // "2025-04"
+
+      try {
+        const todaySnap = await db.collection("users").doc(currentUser.uid).collection("profits").doc(todayKey).get();
+        const monthSnap = await db.collection("users").doc(currentUser.uid).collection("profits").doc(monthKey).get();
+        const lastSnap = await db.collection("users").doc(currentUser.uid).collection("profits").doc(lastMonthKey).get();
+
+        document.getElementById("todayIncome").textContent = todaySnap.data()?.value?.toFixed(2) || "0.00";
+        document.getElementById("monthIncome").textContent = monthSnap.data()?.value?.toFixed(2) || "0.00";
+        document.getElementById("lastMonthIncome").textContent = lastSnap.data()?.value?.toFixed(2) || "0.00";
+      } catch (error) {
+        console.error("Error fetching income data:", error);
+      }
+    }
+
+    // 🔒 Check auth and call fetch
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        fetchIncomeData(user);
+      } else {
+        alert("Please log in.");
+        window.location.href = "signin.html";
+      }
+    });
+  </script>
+</body>
+</html>

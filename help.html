@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Center | SmartDesk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #ebf2ff;
+      --dark: #1f2937;
+      --darker: #111827;
+      --gray: #6b7280;
+      --light-gray: #f9fafb;
+      --border: #e5e7eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+      background-color: var(--light-gray);
+      color: var(--dark);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 32px;
+      margin-right: 10px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--darker);
+      margin: 0 0 15px 0;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      color: var(--gray);
+      max-width: 700px;
+      margin: 0 auto 30px;
+      font-size: 18px;
+    }
+
+    .search-bar {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    input[type="search"] {
+      width: 100%;
+      padding: 15px 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      background-color: white;
+    }
+
+    input[type="search"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), var(--shadow-md);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      pointer-events: none;
+    }
+
+    .search-results {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 0 0 8px 8px;
+      box-shadow: var(--shadow-lg);
+      z-index: 10;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-top: none;
+    }
+
+    .search-results.active {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-result-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      display: block;
+    }
+
+    .search-result-item:hover {
+      background: var(--primary-light);
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-item h4 {
+      margin: 0 0 5px 0;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .search-result-item p {
+      margin: 0;
+      color: var(--gray);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .search-result-category {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .help-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 60px 0;
+    }
+
+    .help-card {
+      background: white;
+      border-radius: 8px;
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      border: 1px solid var(--border);
+      height: 100%;
+    }
+
+    .help-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .help-card h3 {
+      font-size: 20px;
+      margin: 0 0 20px 0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .help-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .help-card li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .help-card li:last-child {
+      border-bottom: none;
+    }
+
+    .help-card a {
+      color: var(--dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .help-card a:hover {
+      color: var(--primary);
+    }
+
+    .icon {
+      margin-right: 12px;
+      color: var(--primary);
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .contact-promo {
+      background: linear-gradient(135deg, var(--primary-light) 0%, #f0f7ff 100%);
+      border-radius: 12px;
+      padding: 48px 40px;
+      text-align: center;
+      margin-top: 60px;
+      border: 1px solid rgba(37, 99, 235, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-promo::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 120px;
+      background: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 120C93.1371 120 120 93.1371 120 60C120 26.8629 93.1371 0 60 0C26.8629 0 0 26.8629 0 60C0 93.1371 26.8629 120 60 120Z' fill='%232563EB' fill-opacity='0.05'/%3E%3C/svg%3E%0A") no-repeat;
+    }
+
+    .contact-promo h2 {
+      margin: 0 0 16px 0;
+      color: var(--darker);
+      font-size: 28px;
+    }
+
+    .contact-promo p {
+      max-width: 600px;
+      margin: 0 auto 24px;
+      font-size: 16px;
+      color: var(--gray);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 8px;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn i {
+      margin-right: 8px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      color: var(--gray);
+      font-size: 14px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+    }
+
+    .popular-topics {
+      margin: 48px 0;
+    }
+
+    .popular-topics h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 24px;
+      color: var(--darker);
+    }
+
+    .topic-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .topic-tag {
+      background: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--dark);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .topic-tag:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .breadcrumb a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: var(--border);
+    }
+
+    /* Loading animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 32px 16px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+      
+      .subtitle {
+        font-size: 16px;
+      }
+      
+      .help-section {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin: 40px 0;
+      }
+      
+      .help-card {
+        padding: 24px;
+      }
+      
+      .contact-promo {
+        padding: 32px 20px;
+        margin-top: 40px;
+      }
+      
+      .contact-promo h2 {
+        font-size: 24px;
+      }
+      
+      .popular-topics h2 {
+        font-size: 20px;
+      }
+    }
+
+    /* Accessibility focus styles */
+    a:focus, button:focus, input:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* No results styling */
+    .no-results {
+      padding: 24px;
+      text-align: center;
+    }
+
+    .no-results i {
+      font-size: 32px;
+      color: var(--gray-light);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .no-results h4 {
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .no-results p {
+      color: var(--gray);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="#">Home</a>
+      <span class="breadcrumb-separator">/</span>
+      <span>Help Center</span>
+    </div>
+    
+    <header>
+      <div class="logo">
+        <img src="https://i.postimg.cc/44MNG7sn/Smart-Desk-removebg-preview.png" alt="SmartDesk Logo">
+        SmartDesk
+      </div>
+      <h1>How can we help you today?</h1>
+      <p class="subtitle">Find answers to common questions, troubleshoot issues, or contact our support team for personalized assistance.</p>
+      <div class="search-bar">
+        <input type="search" id="helpSearch" placeholder="Search our help articles..." autocomplete="off" aria-label="Search help articles">
+        <span class="search-icon"><i class="fas fa-search"></i></span>
+        <div class="search-results" id="searchResults" aria-live="polite"></div>
+      </div>
+    </header>
+
+    <div class="popular-topics">
+      <h2>Popular Topics</h2>
+      <div class="topic-tags">
+        <a href="#" class="topic-tag">Setup Guide</a>
+        <a href="#" class="topic-tag">Troubleshooting</a>
+        <a href="#" class="topic-tag">Account Settings</a>
+        <a href="#" class="topic-tag">Billing Questions</a>
+        <a href="#" class="topic-tag">Software Updates</a>
+        <a href="#" class="topic-tag">Feature Requests</a>
+        <a href="#" class="topic-tag">Mobile App</a>
+        <a href="#" class="topic-tag">Data Security</a>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-card">
+        <h3><i class="fas fa-rocket icon"></i> Getting Started</h3>
+        <ul>
+          <li><a href="article.html?id=setup-guide"><i class="fas fa-box-open icon"></i> Product Setup Guide</a></li>
+          <li><a href="article.html?id=installation"><i class="fas fa-tools icon"></i> Installation Help</a></li>
+          <li><a href="article.html?id=mobile-config"><i class="fas fa-mobile-alt icon"></i> Mobile App Configuration</a></li>
+          <li><a href="article.html?id=connectivity"><i class="fas fa-plug icon"></i> Connectivity Issues</a></li>
+        </ul>
+      </div>
+
+      <div class="help-card">
+        <h3><i class="fas fa-user-circle icon"></i> Account & Billing</h3>
+        <ul>
+          <li><a href="article.html?id=manage-account"><i class="fas fa-user-cog icon"></i> Manage Your Account</a></li>
+          <li><a href="article.html?id=payment-methods"><i class="fas fa-credit-card icon"></i> Payment Methods</a></li>
+          <li><a href="article.html?id=invoices"><i class="fas fa-file-invoice icon"></i> Invoice Questions</a></li>
+          <li><a href="article.html?id=subscription"><i class="fas fa-sync-alt icon"></i> Subscription Changes</a></li>
+        </ul>
+      </div>
+
+      <div class="help-card">
+        <h3><i class="fas fa-wrench icon"></i> Troubleshooting</h3>
+        <ul>
+          <li><a href="article.html?id=error-codes"><i class="fas fa-exclamation-triangle icon"></i> Common Error Codes</a></li>
+          <li><a href="article.html?id=hardware"><i class="fas fa-microchip icon"></i> Hardware Diagnostics</a></li>
+          <li><a href="article.html?id=updates"><i class="fas fa-download icon"></i> Software Updates</a></li>
+          <li><a href="article.html?id=connectivity-solutions"><i class="fas fa-wifi icon"></i> Connectivity Solutions</a></li>
+        </ul>
+      </div>
+
+      <div class="help-card">
+        <h3><i class="fas fa-book icon"></i> Product Guides</h3>
+        <ul>
+          <li><a href="article.html?id=features"><i class="fas fa-sliders-h icon"></i> Features Overview</a></li>
+          <li><a href="article.html?id=advanced-settings"><i class="fas fa-cog icon"></i> Advanced Settings</a></li>
+          <li><a href="article.html?id=integrations"><i class="fas fa-puzzle-piece icon"></i> Integration Help</a></li>
+          <li><a href="article.html?id=analytics"><i class="fas fa-chart-bar icon"></i> Usage Analytics</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="contact-promo">
+      <h2>Still need help? Our team is here for you</h2>
+      <p>Can't find what you're looking for? Contact our support team directly for personalized assistance. We typically respond within 1 business day.</p>
+      <a href="contact.html" class="btn"><i class="fas fa-headset"></i> Contact Support</a>
+    </div>
+
+    <footer>
+      <p>© 2025 SmartDesk Technologies. All rights reserved. <a href="PrivacyPolicy.html">Privacy Policy</a> | <a href="term.html">Terms of Service</a></p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sample search data - in a real app this would come from an API
+      const helpArticles = [
+        { id: 'setup-guide', title: 'Product Setup Guide', category: 'Getting Started', excerpt: 'Step-by-step instructions to set up your SmartDesk' },
+        { id: 'installation', title: 'Installation Help', category: 'Getting Started', excerpt: 'Troubleshooting common installation issues' },
+        { id: 'mobile-config', title: 'Mobile App Configuration', category: 'Getting Started', excerpt: 'How to connect the SmartDesk mobile app to your device' },
+        { id: 'connectivity', title: 'Connectivity Issues', category: 'Getting Started', excerpt: 'Solutions for Bluetooth and WiFi connection problems' },
+        { id: 'manage-account', title: 'Manage Your Account', category: 'Account & Billing', excerpt: 'How to update your account information and preferences' },
+        { id: 'payment-methods', title: 'Payment Methods', category: 'Account & Billing', excerpt: 'Adding, removing, or changing payment methods' },
+        { id: 'invoices', title: 'Invoice Questions', category: 'Account & Billing', excerpt: 'Understanding your invoice and billing statements' },
+        { id: 'subscription', title: 'Subscription Changes', category: 'Account & Billing', excerpt: 'Upgrading, downgrading, or canceling your subscription' },
+        { id: 'error-codes', title: 'Common Error Codes', category: 'Troubleshooting', excerpt: 'List of error codes and how to resolve them' },
+        { id: 'hardware', title: 'Hardware Diagnostics', category: 'Troubleshooting', excerpt: 'Running diagnostics tests on your SmartDesk hardware' },
+        { id: 'updates', title: 'Software Updates', category: 'Troubleshooting', excerpt: 'How to check for and install the latest software updates' },
+        { id: 'connectivity-solutions', title: 'Connectivity Solutions', category: 'Troubleshooting', excerpt: 'Advanced troubleshooting for connection issues' },
+        { id: 'features', title: 'Features Overview', category: 'Product Guides', excerpt: 'Complete guide to all SmartDesk features' },
+        { id: 'advanced-settings', title: 'Advanced Settings', category: 'Product Guides', excerpt: 'Customizing your SmartDesk with advanced options' },
+        { id: 'integrations', title: 'Integration Help', category: 'Product Guides', excerpt: 'Connecting SmartDesk with other apps and services' },
+        { id: 'analytics', title: 'Usage Analytics', category: 'Product Guides', excerpt: 'Understanding your productivity data and insights' }
+      ];
+
+      const searchInput = document.getElementById('helpSearch');
+      const searchResults = document.getElementById('searchResults');
+
+      // Search functionality
+      searchInput.addEventListener('input', debounce(function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (query.length < 2) {
+          searchResults.classList.remove('active');
+          return;
+        }
+        
+        // Show loading state
+        searchResults.innerHTML = `
+          <div class="search-result-item">
+            <div style="display: flex; align-items: center;">
+              <div class="loading"></div>
+              <span>Searching help articles...</span>
+            </div>
+          </div>
+        `;
+        searchResults.classList.add('active');
+        
+        // Simulate API delay
+        setTimeout(() => {
+          const results = helpArticles.filter(article => 
+            article.title.toLowerCase().includes(query) || 
+            article.excerpt.toLowerCase().includes(query) ||
+            article.category.toLowerCase().includes(query)
+          );
+          
+          displaySearchResults(results);
+        }, 300);
+      }, 200));
+
+      function displaySearchResults(results) {
+        if (results.length === 0) {
+          searchResults.innerHTML = `
+            <div class="no-results">
+              <i class="fas fa-search"></i>
+              <h4>No results found</h4>
+              <p>Try different keywords or contact our support team</p>
+              <a href="contact.html" class="btn" style="margin-top: 16px; display: inline-block;">
+                <i class="fas fa-headset"></i> Contact Support
+              </a>
+            </div>
+          `;
+          return;
+        }
+        
+        let html = '';
+        results.forEach(article => {
+          html += `
+            <a href="article.html?id=${article.id}" class="search-result-item">
+              <h4>${article.title}</h4>
+              <p>${article.excerpt}</p>
+              <span class="search-result-category">${article.category}</span>
+            </a>
+          `;
+        });
+        
+        // Add view all results if more than 5
+        if (results.length > 5) {
+          html += `
+            <a href="search.html?q=${encodeURIComponent(searchInput.value)}" class="search-result-item" style="text-align: center; background: var(--light-gray);">
+              View all ${results.length} results <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            </a>
+          `;
+        }
+        
+        searchResults.innerHTML = html;
+      }
+
+      // Close search results when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!searchResults.contains(e.target) && e.target !== searchInput) {
+          searchResults.classList.remove('active');
+        }
+      });
+
+      // Debounce function to limit how often search runs
+      function debounce(func, wait) {
+        let timeout;
+        return function() {
+          const context = this, args = arguments;
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            func.apply(context, args);
+          }, wait);
+        };
+      }
+    });
+  </script>
+</body>
+</html>

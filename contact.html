@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | SmartDesk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #ebf2ff;
+      --dark: #1f2937;
+      --gray: #6b7280;
+      --light-gray: #f9fafb;
+      --border: #e5e7eb;
+      --error: #ef4444;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+      background-color: var(--light-gray);
+      color: var(--dark);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0 0 15px 0;
+    }
+
+    .contact-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      margin: 60px 0;
+    }
+
+    .contact-methods {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .contact-methods h2 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    .contact-card {
+      margin-bottom: 30px;
+    }
+
+    .contact-card h3 {
+      display: flex;
+      align-items: center;
+      margin: 0 0 15px 0;
+    }
+
+    .contact-icon {
+      margin-right: 10px;
+      font-size: 24px;
+      color: var(--primary);
+    }
+
+    .contact-form {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 150px;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+    }
+
+    .office-info {
+      margin-top: 60px;
+      text-align: center;
+    }
+
+    .office-info h2 {
+      color: var(--dark);
+    }
+
+    .map-placeholder {
+      background: var(--border);
+      height: 300px;
+      border-radius: 12px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .success-message {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 28px;
+      }
+      
+      .contact-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">SmartDesk</div>
+      <h1>Contact Our Team</h1>
+      <p>We're here to help and answer any questions you might have.</p>
+    </header>
+
+    <div class="contact-container">
+      <div class="contact-methods">
+        <h2>Get in Touch</h2>
+        
+        <div class="contact-card">
+          <h3><span class="contact-icon">📞</span> Phone Support</h3>
+          <p>Our support team is available:</p>
+          <p><strong>Monday-Friday:</strong> 9AM - 6PM IST</p>
+          <p><strong>Phone:</strong> +91 9699779276</p>
+        </div>
+
+        <div class="contact-card">
+          <h3><span class="contact-icon">✉️</span> Email Us</h3>
+          <p>Send us an email and we'll respond within 24 hours.</p>
+          <p><strong>General Inquiries:</strong> omkarjadhav1k@gmail.com</p>
+          <p><strong>Support:</strong> smartshop.dashboard@gmail.com</p>
+        </div>
+
+        <div class="contact-card">
+          <h3><span class="contact-icon">💬</span> Live Chat</h3>
+          <p>Chat with our support team in real-time.</p>
+          <p><strong>Available:</strong> 10AM - 5PM IST</p>
+          <p><button class="btn" id="liveChatBtn">Start Chat</button></p>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <div class="success-message" id="successMessage">
+          Thank you for your message! We'll get back to you soon.
+        </div>
+        
+        <h2>Send Us a Message</h2>
+        <form id="contactForm" action="https://formsubmit.co/smartshop.dashboard@gmail.com" method="POST">
+          <!-- Add these hidden inputs for FormSubmit configuration -->
+          <input type="hidden" name="_subject" value="New Contact Form Submission from SmartDesk">
+          <input type="hidden" name="_template" value="basic">
+          <input type="hidden" name="_next" value="http://127.0.0.1:5500/thank-you.html"> <!-- Replace with your thank you page -->
+          <input type="text" name="_honey" style="display:none"> <!-- Honeypot for spam -->
+          
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" required>
+            <div class="error-message" id="nameError">Please enter your name</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" required>
+            <div class="error-message" id="emailError">Please enter a valid email address</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="subject">Subject *</label>
+            <select id="subject" name="subject" required>
+              <option value="">Select a topic</option>
+              <option value="sales">Sales Inquiry</option>
+              <option value="support">Technical Support</option>
+              <option value="billing">Billing Question</option>
+              <option value="feedback">Product Feedback</option>
+              <option value="other">Other</option>
+            </select>
+            <div class="error-message" id="subjectError">Please select a subject</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">Your Message *</label>
+            <textarea id="message" name="message" required></textarea>
+            <div class="error-message" id="messageError">Please enter your message</div>
+          </div>
+          
+          <button type="submit" class="btn" id="submitBtn">Send Message</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="office-info">
+      <h2>Our Corporate Office</h2>
+      <p>Revenue Colony, Near Kalika Medical,<br>
+      Shirur, Pune, Maharashtra 412210</p>
+      
+      <div class="map-placeholder">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1293.8575145825664!2d74.37321348429408!3d18.827011010249084!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2s!5e0!3m2!1sen!2sin!4v1749141238189!5m2!1sen!2sin" 
+          width="100%" 
+          height="100%" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 SmartDesk Technologies. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const contactForm = document.getElementById('contactForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const successMessage = document.getElementById('successMessage');
+      const liveChatBtn = document.getElementById('liveChatBtn');
+
+      // Form validation
+      contactForm.addEventListener('submit', function(e) {
+        // Reset previous errors
+        document.querySelectorAll('.error-message').forEach(el => {
+          el.style.display = 'none';
+          el.previousElementSibling.style.borderColor = '';
+        });
+        
+        let isValid = true;
+        
+        // Validate name
+        const nameInput = document.getElementById('name');
+        if (!nameInput.value.trim()) {
+          document.getElementById('nameError').style.display = 'block';
+          nameInput.style.borderColor = 'var(--error)';
+          isValid = false;
+        }
+        
+        // Validate email
+        const emailInput = document.getElementById('email');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailInput.value)) {
+          document.getElementById('emailError').style.display = 'block';
+          emailInput.style.borderColor = 'var(--error)';
+          isValid = false;
+        }
+        
+        // Validate subject
+        const subjectInput = document.getElementById('subject');
+        if (!subjectInput.value) {
+          document.getElementById('subjectError').style.display = 'block';
+          subjectInput.style.borderColor = 'var(--error)';
+          isValid = false;
+        }
+        
+        // Validate message
+        const messageInput = document.getElementById('message');
+        if (!messageInput.value.trim()) {
+          document.getElementById('messageError').style.display = 'block';
+          messageInput.style.borderColor = 'var(--error)';
+          isValid = false;
+        }
+        
+        if (!isValid) {
+          e.preventDefault();
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Sending...';
+        }
+      });
+      
+      // Live chat button handler
+      liveChatBtn.addEventListener('click', function() {
+        alert('Our live chat service is currently available Monday-Friday from 10AM to 5PM IST. Please try again during these hours or contact us via email.');
+      });
+      
+      // Input validation on blur
+      document.getElementById('name').addEventListener('blur', validateName);
+      document.getElementById('email').addEventListener('blur', validateEmail);
+      document.getElementById('subject').addEventListener('change', validateSubject);
+      document.getElementById('message').addEventListener('blur', validateMessage);
+      
+      function validateName() {
+        const input = document.getElementById('name');
+        const error = document.getElementById('nameError');
+        if (!input.value.trim()) {
+          error.style.display = 'block';
+          input.style.borderColor = 'var(--error)';
+        } else {
+          error.style.display = 'none';
+          input.style.borderColor = '';
+        }
+      }
+      
+      function validateEmail() {
+        const input = document.getElementById('email');
+        const error = document.getElementById('emailError');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(input.value)) {
+          error.style.display = 'block';
+          input.style.borderColor = 'var(--error)';
+        } else {
+          error.style.display = 'none';
+          input.style.borderColor = '';
+        }
+      }
+      
+      function validateSubject() {
+        const input = document.getElementById('subject');
+        const error = document.getElementById('subjectError');
+        if (!input.value) {
+          error.style.display = 'block';
+          input.style.borderColor = 'var(--error)';
+        } else {
+          error.style.display = 'none';
+          input.style.borderColor = '';
+        }
+      }
+      
+      function validateMessage() {
+        const input = document.getElementById('message');
+        const error = document.getElementById('messageError');
+        if (!input.value.trim()) {
+          error.style.display = 'block';
+          input.style.borderColor = 'var(--error)';
+        } else {
+          error.style.display = 'none';
+          input.style.borderColor = '';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

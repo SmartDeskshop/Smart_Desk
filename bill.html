@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Shop Manager - Billing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    #billContent {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+    .bill-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .bill-header h1 {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1a365d;
+    }
+    .bill-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .bill-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .bill-table th, .bill-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .bill-table th {
+      background-color: #f2f2f2;
+    }
+    .bill-totals {
+      margin-left: auto;
+      width: 300px;
+    }
+    .bill-totals div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .bill-footer {
+      text-align: center;
+      margin-top: 30px;
+      font-style: italic;
+      color: #666;
+    }
+    </style>
+  <!-- Add html2pdf library for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+  <!-- Header -->
+  <header class="bg-blue-700 text-white shadow-md">
+    <div class="container mx-auto p-4 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-cash-register text-2xl"></i>
+        <h1 class="text-xl font-bold">Smart Shop Manager</h1>
+        <span class="ml-4 text-sm bg-blue-600 px-2 py-1 rounded">Billing System</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div id="userInfo" class="text-sm bg-blue-800 px-3 py-1 rounded-full flex items-center">
+          <i class="fas fa-user-circle mr-2"></i>
+          <span id="userName">User</span>
+        </div>
+        <a href="invoice.html" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+          <i class="fas fa-file-invoice mr-2"></i> Invoice Generator
+        </a>
+        <button onclick="goBack()" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-lg flex items-center transition-colors">
+          <i class="fas fa-arrow-left mr-2"></i> Back
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto p-4 md:p-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fas fa-chart-line mr-2 text-blue-600"></i> Sales Analytics
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="font-medium text-blue-800">Today's Sales</h4>
+              <p class="text-3xl font-bold text-blue-600 mt-2">₹<span id="todayIncome">0.00</span></p>
+            </div>
+            <div class="bg-blue-100 p-3 rounded-full">
+              <i class="fas fa-calendar-day text-blue-600"></i>
+            </div>
+          </div>
+          <div class="mt-4 text-sm text-blue-600">
+            <i class="fas fa-info-circle mr-1"></i> Updated in real-time
+          </div>
+        </div>
+        
+        <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="font-medium text-green-800">This Month</h4>
+              <p class="text-3xl font-bold text-green-600 mt-2">₹<span id="monthIncome">0.00</span></p>
+            </div>
+            <div class="bg-green-100 p-3 rounded-full">
+              <i class="fas fa-calendar-alt text-green-600"></i>
+            </div>
+          </div>
+          <div class="mt-4 text-sm text-green-600">
+            <i class="fas fa-info-circle mr-1"></i> Current month's total
+          </div>
+        </div>
+        
+        <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="font-medium text-purple-800">Last Month</h4>
+              <p class="text-3xl font-bold text-purple-600 mt-2">₹<span id="lastMonthIncome">0.00</span></p>
+            </div>
+            <div class="bg-purple-100 p-3 rounded-full">
+              <i class="fas fa-calendar-check text-purple-600"></i>
+            </div>
+          </div>
+          <div class="mt-4 text-sm text-purple-600">
+            <i class="fas fa-info-circle mr-1"></i> Previous month's total
+          </div>
+        </div>
+      </div>
+    </div>
+    <pre> </pre>
+    <!-- Customer Details Card -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fas fa-user-tag mr-2 text-blue-600"></i> Customer Details
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="custName" class="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+          <input type="text" id="custName" placeholder="Enter customer name" 
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        </div>
+        <div>
+          <label for="custNumber" class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+          <input type="text" id="custNumber" placeholder="Enter mobile number" 
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Search Card -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fas fa-search mr-2 text-blue-600"></i> Add Products
+      </h2>
+      <div class="relative mb-4">
+        <label for="searchItem" class="block text-sm font-medium text-gray-700 mb-1">Search Product</label>
+        <div class="relative">
+          <input type="text" id="searchItem" placeholder="Type product name..." 
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                 oninput="filterProducts()" autocomplete="off">
+          <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+          <ul id="suggestions" class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-lg border border-gray-200 max-h-60 overflow-y-auto hidden"></ul>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-end gap-4">
+        <div class="flex-1">
+          <label for="searchQty" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+          <input type="number" id="searchQty" placeholder="1" min="1" value="1" 
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        </div>
+        <button onclick="addToBasket()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors">
+          <i class="fas fa-plus-circle mr-2"></i> Add to Bill
+        </button>
+      </div>
+    </div>
+
+    <!-- Basket Card -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold flex items-center">
+          <i class="fas fa-shopping-basket mr-2 text-blue-600"></i> Current Bill
+        </h2>
+        <div class="text-lg font-medium">
+          Items: <span id="itemCount" class="text-blue-600">0</span>
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+            </tr>
+          </thead>
+          <tbody id="basketList" class="bg-white divide-y divide-gray-200"></tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+        <div class="flex justify-end">
+          <div class="text-right">
+            <div class="text-lg mb-2">Subtotal: <span class="font-semibold">₹<span id="subTotal">0.00</span></span></div>
+            <div class="text-lg mb-2">Tax (0%): <span class="font-semibold">₹<span id="taxAmount">0.00</span></span></div>
+            <div class="text-2xl font-bold text-blue-700">Grand Total: ₹<span id="grandTotal">0.00</span></div>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end space-x-4">
+          <button onclick="clearBasket()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg flex items-center transition-colors">
+            <i class="fas fa-trash-alt mr-2"></i> Clear
+          </button>
+          <div class="relative inline-block">
+            <button onclick="toggleBillOptions()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors">
+              <i class="fas fa-file-invoice-dollar mr-2"></i> Generate Bill
+            </button>
+            <div id="billOptions" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200 hidden">
+              <button onclick="generateBill('download')" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center">
+                <i class="fas fa-download mr-2 text-blue-600"></i> Download
+              </button>
+              <button onclick="generateBill('print')" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center">
+                <i class="fas fa-print mr-2 text-blue-600"></i> Print
+              </button>
+              <button onclick="saveBillForInvoice()" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center">
+                <i class="fas fa-file-invoice mr-2 text-blue-600"></i> Save for Invoice
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Hidden div for bill generation -->
+  <div id="billContent" class="hidden">
+    <div class="p-6 max-w-md mx-auto">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-blue-700">Smart Shop Manager</h1>
+        <p class="text-gray-600">123 Shop Street, City</p>
+        <p class="text-gray-600">GSTIN: 22ABCDE1234F1Z5</p>
+      </div>
+      
+      <div class="border-b border-gray-200 pb-2 mb-4">
+        <div class="flex justify-between">
+          <span class="font-medium">Invoice #:</span>
+          <span id="billNumber">${Math.floor(1000 + Math.random() * 9000)}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="font-medium">Date:</span>
+          <span id="billDate">${new Date().toLocaleDateString()}</span>
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <h3 class="font-medium text-gray-700">Customer Details:</h3>
+        <p id="billCustomerName">Walk-in Customer</p>
+        <p id="billCustomerNumber">N/A</p>
+      </div>
+      
+      <table class="w-full mb-4">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="text-left py-2">Item</th>
+            <th class="text-right py-2">Price</th>
+            <th class="text-right py-2">Qty</th>
+            <th class="text-right py-2">Total</th>
+          </tr>
+        </thead>
+        <tbody id="billItems">
+          <!-- Items will be added here -->
+        </tbody>
+      </table>
+      
+      <div class="border-t border-gray-200 pt-4">
+        <div class="flex justify-between mb-1">
+          <span>Subtotal:</span>
+          <span id="billSubtotal">₹0.00</span>
+        </div>
+        <div class="flex justify-between mb-1">
+          <span>Tax (0%):</span>
+          <span id="billTax">₹0.00</span>
+        </div>
+        <div class="flex justify-between font-bold text-lg">
+          <span>Grand Total:</span>
+          <span id="billTotal">₹0.00</span>
+        </div>
+      </div>
+      
+      <div class="mt-8 text-center text-sm text-gray-500">
+        <p>Thank you for your purchase!</p>
+        <p>Please visit again</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEZzbOune3lfB2YFkYMSlg2CZJbAlGQdw",
+      authDomain: "smartshopmanager59.firebaseapp.com",
+      projectId: "smartshopmanager59",
+      storageBucket: "smartshopmanager59.appspot.com",
+      messagingSenderId: "697076760349",
+      appId: "1:697076760349:web:484fd62ea3806a3f92ebf4"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    let allProducts = [];
+    let basket = [];
+    let currentUser = null;
+
+    auth.onAuthStateChanged(async user => {
+      if (!user) return (window.location.href = "login.html");
+      currentUser = user;
+      
+      // Get user's display name or use first part of email
+      const displayName = user.displayName || user.email.split('@')[0];
+      document.getElementById("userName").textContent = displayName;
+      
+      document.getElementById("userInfo").innerHTML = `
+        <i class="fas fa-user-circle mr-2"></i>
+        ${displayName} 
+        <span class="ml-2 text-xs bg-blue-900 px-2 py-0.5 rounded-full">${new Date().toLocaleTimeString()}</span>
+      `;
+
+      const snapshot = await db.collection("users").doc(user.uid).collection("stocks").get();
+      allProducts = snapshot.docs.map(doc => doc.data());
+
+      fetchIncomeData();
+    });
+
+    function toggleBillOptions() {
+      document.getElementById("billOptions").classList.toggle("hidden");
+    }
+
+    function addToBasket() {
+      const name = document.getElementById("searchItem").value;
+      const qty = parseInt(document.getElementById("searchQty").value) || 1;
+      const price = parseFloat(document.getElementById("searchItem").dataset.price || 0);
+
+      if (!name || !price) {
+        alert("Please select a valid product from the suggestions.");
+        return;
+      }
+
+      // Check if item already exists in basket
+      const existingItemIndex = basket.findIndex(item => item.name === name);
+      if (existingItemIndex >= 0) {
+        basket[existingItemIndex].qty += qty;
+        basket[existingItemIndex].total = basket[existingItemIndex].price * basket[existingItemIndex].qty;
+      } else {
+        const total = price * qty;
+        basket.push({ name, price, qty, total });
+      }
+
+      renderBasket();
+      document.getElementById("searchItem").value = "";
+      document.getElementById("searchItem").dataset.price = "";
+      document.getElementById("searchQty").value = "1";
+    }
+
+    function renderBasket() {
+      const basketList = document.getElementById("basketList");
+      basketList.innerHTML = "";
+      let subTotal = 0;
+
+      basket.forEach((item, index) => {
+        subTotal += item.total;
+        basketList.innerHTML += `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.name}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹${item.price.toFixed(2)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.qty}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">₹${item.total.toFixed(2)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <button onclick="removeItem(${index})" class="text-red-600 hover:text-red-900">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      if (basket.length === 0) {
+        basketList.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+              No items added to the bill yet. Search and add products above.
+            </td>
+          </tr>
+        `;
+      }
+
+      document.getElementById("subTotal").textContent = subTotal.toFixed(2);
+      document.getElementById("grandTotal").textContent = subTotal.toFixed(2);
+      document.getElementById("itemCount").textContent = basket.length;
+    }
+
+    function removeItem(index) {
+      basket.splice(index, 1);
+      renderBasket();
+    }
+
+    function clearBasket() {
+      if (basket.length === 0 || confirm("Are you sure you want to clear the current bill?")) {
+        basket = [];
+        renderBasket();
+        document.getElementById("custName").value = "";
+        document.getElementById("custNumber").value = "";
+      }
+    }
+
+    async function saveBillForInvoice() {
+      if (basket.length === 0) {
+        alert("Cannot save bill with empty basket.");
+        return;
+      }
+
+      const customerName = document.getElementById("custName").value || "Walk-in Customer";
+      const mobileNumber = document.getElementById("custNumber").value || "N/A";
+      const totalAmount = parseFloat(document.getElementById("grandTotal").textContent);
+
+      try {
+        // Save the bill data to Firebase
+        await db.collection("users").doc(currentUser.uid).collection("pendingInvoices").doc().set({
+          customerName,
+          mobileNumber,
+          items: basket,
+          totalAmount,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("Bill saved for invoice generation. You can now generate an invoice from the Invoice Generator page.");
+        clearBasket();
+      } catch (error) {
+        console.error("Error saving bill:", error);
+        alert("Error saving bill. Please try again.");
+      }
+    }
+
+    function prepareBillContent() {
+      const customerName = document.getElementById("custName").value || "Walk-in Customer";
+      const mobileNumber = document.getElementById("custNumber").value || "N/A";
+      const subTotal = parseFloat(document.getElementById("subTotal").textContent);
+      const grandTotal = parseFloat(document.getElementById("grandTotal").textContent);
+      
+      // Update bill content
+      document.getElementById("billCustomerName").textContent = customerName;
+      document.getElementById("billCustomerNumber").textContent = mobileNumber;
+      document.getElementById("billSubtotal").textContent = `₹${subTotal.toFixed(2)}`;
+      document.getElementById("billTotal").textContent = `₹${grandTotal.toFixed(2)}`;
+      
+      // Add items to bill
+      const billItems = document.getElementById("billItems");
+      billItems.innerHTML = "";
+      basket.forEach(item => {
+        const row = document.createElement("tr");
+        row.className = "border-b border-gray-200";
+        row.innerHTML = `
+          <td class="py-2">${item.name}</td>
+          <td class="text-right py-2">₹${item.price.toFixed(2)}</td>
+          <td class="text-right py-2">${item.qty}</td>
+          <td class="text-right py-2">₹${item.total.toFixed(2)}</td>
+        `;
+        billItems.appendChild(row);
+      });
+      
+      // Set bill number and date
+      document.getElementById("billNumber").textContent = `INV-${Math.floor(1000 + Math.random() * 9000)}`;
+      document.getElementById("billDate").textContent = new Date().toLocaleDateString();
+    }
+
+    async function generateBill(mode) {
+      if (basket.length === 0) {
+        alert("Cannot generate bill with empty basket.");
+        return;
+      }
+
+      prepareBillContent();
+      
+      const date = new Date();
+      const todayKey = date.toISOString().split("T")[0];
+      const monthKey = date.toISOString().slice(0, 7);
+      let profit = 0;
+
+      for (const item of basket) {
+        const product = allProducts.find(p => p.productName === item.name);
+        const cost = product?.costPrice || 0;
+        profit += (item.price - cost) * item.qty;
+      }
+
+      try {
+        await db.collection("users").doc(currentUser.uid).collection("profits").doc(todayKey).set({
+          date: todayKey,
+          value: firebase.firestore.FieldValue.increment(profit)
+        }, { merge: true });
+
+        await db.collection("users").doc(currentUser.uid).collection("profits").doc(monthKey).set({
+          month: monthKey,
+          value: firebase.firestore.FieldValue.increment(profit)
+        }, { merge: true });
+
+        fetchIncomeData();
+
+        // Create a bill object for history
+        const billData = {
+          customerName: document.getElementById("custName").value || "Walk-in Customer",
+          mobileNumber: document.getElementById("custNumber").value || "N/A",
+          items: basket,
+          total: parseFloat(document.getElementById("grandTotal").textContent),
+          date: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        await db.collection("users").doc(currentUser.uid).collection("bills").add(billData);
+
+        async function generateBill(mode) {
+      if (basket.length === 0) {
+        alert("Cannot generate bill with empty basket.");
+        return;
+      }
+
+      prepareBillContent();
+      
+      const date = new Date();
+      const todayKey = date.toISOString().split("T")[0];
+      const monthKey = date.toISOString().slice(0, 7);
+      let profit = 0;
+
+      for (const item of basket) {
+        const product = allProducts.find(p => p.productName === item.name);
+        const cost = product?.costPrice || 0;
+        profit += (item.price - cost) * item.qty;
+      }
+
+      try {
+        // Save profit data to Firebase
+        await db.collection("users").doc(currentUser.uid).collection("profits").doc(todayKey).set({
+          date: todayKey,
+          value: firebase.firestore.FieldValue.increment(profit)
+        }, { merge: true });
+
+        await db.collection("users").doc(currentUser.uid).collection("profits").doc(monthKey).set({
+          month: monthKey,
+          value: firebase.firestore.FieldValue.increment(profit)
+        }, { merge: true });
+
+        // Save bill history
+        const billData = {
+          customerName: document.getElementById("custName").value || "Walk-in Customer",
+          mobileNumber: document.getElementById("custNumber").value || "N/A",
+          items: basket,
+          total: parseFloat(document.getElementById("grandTotal").textContent),
+          date: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        await db.collection("users").doc(currentUser.uid).collection("bills").add(billData);
+
+        // Generate the bill
+        const element = document.getElementById("billContent");
+        const opt = {
+          margin: 10,
+          filename: `bill_${Date.now()}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { 
+            scale: 2,
+            logging: true,
+            useCORS: true,
+            allowTaint: true
+          },
+          jsPDF: { 
+            unit: 'mm', 
+            format: 'a5', 
+            orientation: 'portrait' 
+          }
+        };
+
+        if (mode === "download") {
+          await html2pdf().set(opt).from(element).save();
+        } else if (mode === "print") {
+          const pdf = await html2pdf().set(opt).from(element).outputPdf();
+          const blob = new Blob([pdf], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          window.open(url, '_blank');
+        }
+
+        // Clear the basket after successful bill generation
+        clearBasket();
+      } catch (error) {
+        console.error("Error generating bill:", error);
+        alert("Error generating bill. Please try again.");
+      }
+    }
+
+        // Clear the basket after successful bill generation
+        clearBasket();
+      } catch (error) {
+        console.error("Error generating bill:", error);
+        alert("Error generating bill. Please try again.");
+      }
+    }
+
+    async function fetchIncomeData() {
+      const date = new Date();
+      const todayKey = date.toISOString().split("T")[0];
+      const monthKey = date.toISOString().slice(0, 7);
+      const lastMonthKey = new Date(date.getFullYear(), date.getMonth() - 1).toISOString().slice(0, 7);
+
+      try {
+        const todaySnap = await db.collection("users").doc(currentUser.uid).collection("profits").doc(todayKey).get();
+        const monthSnap = await db.collection("users").doc(currentUser.uid).collection("profits").doc(monthKey).get();
+        const lastSnap = await db.collection("users").doc(currentUser.uid).collection("profits").doc(lastMonthKey).get();
+
+        document.getElementById("todayIncome").textContent = todaySnap.data()?.value?.toFixed(2) || "0.00";
+        document.getElementById("monthIncome").textContent = monthSnap.data()?.value?.toFixed(2) || "0.00";
+        document.getElementById("lastMonthIncome").textContent = lastSnap.data()?.value?.toFixed(2) || "0.00";
+      } catch (error) {
+        console.error("Error fetching income data:", error);
+      }
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    function filterProducts() {
+      const input = document.getElementById("searchItem").value.toLowerCase();
+      const suggestions = document.getElementById("suggestions");
+      suggestions.innerHTML = "";
+      
+      if (!input.trim()) {
+        suggestions.classList.add("hidden");
+        return;
+      }
+
+      const filtered = allProducts.filter(p =>
+        p.productName.toLowerCase().includes(input)
+      );
+
+      if (filtered.length === 0) {
+        suggestions.innerHTML = `
+          <li class="px-4 py-2 text-sm text-gray-500">No products found</li>
+        `;
+        suggestions.classList.remove("hidden");
+        return;
+      }
+
+      filtered.forEach(product => {
+        const li = document.createElement("li");
+        li.className = "px-4 py-2 hover:bg-blue-50 cursor-pointer flex justify-between items-center";
+        li.innerHTML = `
+          <span>${product.productName}</span>
+          <span class="text-blue-600 font-medium">₹${product.sellPrice.toFixed(2)}</span>
+        `;
+        li.onclick = () => {
+          document.getElementById("searchItem").value = product.productName;
+          document.getElementById("searchItem").dataset.price = product.sellPrice;
+          document.getElementById("searchQty").focus();
+          suggestions.classList.add("hidden");
+        };
+        suggestions.appendChild(li);
+      });
+
+      suggestions.classList.remove("hidden");
+    }
+
+    // Close suggestions when clicking outside
+    document.addEventListener("click", function(event) {
+      if (!event.target.closest("#searchItem") && !event.target.closest("#suggestions")) {
+        document.getElementById("suggestions").classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
